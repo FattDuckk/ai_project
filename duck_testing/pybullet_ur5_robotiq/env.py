@@ -59,35 +59,55 @@ class ClutteredPushGrasp:
 
         self.boxes = []  # for tracking box IDs
 
-        # box_positions = [
-        #     [0.2, 0, 0.05],      # small box
-        #     [0.0, 0.1, 0.05],    # medium box
-        #     [-0.2, -0.1, 0.05],  # large box
-        # ]
-        box_positions = [
-        [0.2, 0, 0.05],      # small box
-        [0.0, 0.1, 0.05],    # medium box
-        [-0.2, -0.1, 0.05],  # large box
-        ]
+        import random
+        import math
 
-        box_files = [
+        # Box spawn settings
+        box_types = [
             "./boxes/box_small.urdf",
             "./boxes/box_medium.urdf",
             "./boxes/box_large.urdf",
         ]
-        # Place a small box first (base)
-        small_box_id = p.loadURDF("./boxes/box_small.urdf", basePosition=[0, 2, 0.025])
-        self.boxes.append(small_box_id)
 
-        # Then place a large box on top, but slightly off-center
-        # So it's like: ______
-        #               ⬜    ⬛  ← offset big box
-        large_box_id = p.loadURDF("./boxes/box_large.urdf", basePosition=[-0.03, 2, 0.1])
-        self.boxes.append(large_box_id)
+        num_boxes = 12
+        y_range = (-1.3, -1.7)
+        x_range = (-0.3, 0.3)
+        min_distance = 0.08  # Minimum distance between box centers (adjust if needed)
 
-        for pos, urdf in zip(box_positions, box_files):
-            box_id = p.loadURDF(urdf, basePosition=pos)
-            self.boxes.append(box_id)
+        existing_positions = []
+
+        for _ in range(num_boxes):
+            placed = False
+            while not placed:
+                urdf_file = random.choice(box_types)
+                x = random.uniform(x_range[0], x_range[1])
+                y = random.uniform(y_range[0], y_range[1])
+                z = 0.05
+
+                new_pos = (x, y)
+
+                # Check against all existing boxes
+                too_close = False
+                for pos in existing_positions:
+                    dist = math.sqrt((pos[0] - x)**2 + (pos[1] - y)**2)
+                    if dist < min_distance:
+                        too_close = True
+                        break
+
+                if not too_close:
+                    box_id = p.loadURDF(urdf_file, basePosition=[x, y, z])
+                    self.boxes.append(box_id)
+                    existing_positions.append(new_pos)
+                    placed = True
+
+        if self.vis:
+            p.resetDebugVisualizerCamera(
+                cameraDistance=1.2,      # how far back the camera is
+                cameraYaw=90,            # rotate left/right
+                cameraPitch=-89,         # -89 = looking almost straight down
+                cameraTargetPosition=[0, -1.5, 0.05]   # where the camera looks (center of your boxes)
+            )
+
 
     def step_simulation(self):
         """
