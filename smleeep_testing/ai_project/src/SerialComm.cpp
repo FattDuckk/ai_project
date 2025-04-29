@@ -5,14 +5,16 @@ static unsigned char cmdReceived[COM_LEN_MAX];
 static unsigned char cmdIndex = 0;
 
 SerialComm::SerialComm() {
+    // begin();
+    // serialCmdInit();
 }
 
-void SerialComm::begin(long baud)
+void SerialComm::begin()
 {
-    Serial.begin(baud);
+    Serial.begin(115200);
     while (!Serial)
     {
-        ;
+        Serial.println("NOT READY");
     }
     Serial.println("READY");
 }
@@ -22,26 +24,45 @@ void SerialComm::begin(long baud)
 void SerialComm::getSerialCmd()
 {
     int data = -1;
+    String incoming = "";
 
     while (Serial.available())
     {
         data = Serial.read();
-
+        
         if (data != -1)
         {
+            incoming += (char)data;   // collect characters
             put((uint8_t)data);
         }
     }
+
+    if (incoming.length() > 0) {
+        Serial.print("INCOMING: ");
+        Serial.println(incoming);    // print full readable message
+    }
+    handleCommand(incoming); // handle the command
 }
 
 void SerialComm::handleCommand(const String &cmd)
 {
     double x, y, z;
-    if (cmd.startsWith("MOVE"))
+    String mutableCmd = cmd; // Create a mutable copy of cmd
+    // Remove unwanted b'...' wrappers if they exist
+    if (mutableCmd.startsWith("b'") || mutableCmd.startsWith("b\"")) {
+        mutableCmd = mutableCmd.substring(2, mutableCmd.length() - 1);
+    }
+
+    // Remove trailing \n or \r\n
+    mutableCmd.trim(); // <-- this automatically removes leading/trailing whitespace, including \n and \r
+
+    Serial.println(mutableCmd);
+    if (mutableCmd.startsWith("MOVE"))
     {
-        int count = sscanf(cmd.c_str(), "MOVE %lf %lf %lf", &x, &y, &z);
+        int count = sscanf(mutableCmd.c_str(), "MOVE %lf %lf %lf", &x, &y, &z);
         if (count == 3)
         {
+            Serial.print("DEBUG");
             sendOK();
         }
         else
@@ -55,12 +76,14 @@ void SerialComm::handleCommand(const String &cmd)
     }
 }
 
+
 void SerialComm::handleSerialCmd()
 {
     uint8_t data = 0;
 
     while (get(&data))
     {
+        Serial.print("DEBUG");
         handleSerialData(data);
     }
 }
@@ -145,13 +168,17 @@ void SerialComm::serialCmdInit()
 
 void SerialComm::sendOK()
 {
-    Serial.println("OK");
+        Serial.println("OK");
 }
 
 void SerialComm::sendError(const String &msg)
 {
-    Serial.print("ERROR: ");
-    Serial.println(msg);
+    if (millis() - lastSerialSendTime >= serialSendInterval)
+    {
+        Serial.print("ERROR: ");
+        Serial.println(msg);
+        lastSerialSendTime = millis();
+    }
 }
 
 void SerialComm::reportButtonEvent(unsigned char buttonId, unsigned char event)
@@ -270,7 +297,7 @@ bool SerialComm::parseCommand(char *message)
     // }
 }
 
-int32_t SerialComm::put(uint8_t value)
+uint32_t SerialComm::put(uint8_t value)
 {
 
     if (isFull())
@@ -285,7 +312,7 @@ int32_t SerialComm::put(uint8_t value)
     return 1;
 }
 
-int32_t SerialComm::get(uint8_t *value)
+uint32_t SerialComm::get(uint8_t *value)
 {
 
     if (isEmpty())
@@ -298,12 +325,12 @@ int32_t SerialComm::get(uint8_t *value)
     return 1;
 }
 
-int32_t SerialComm::isFull()
+uint32_t SerialComm::isFull()
 {
     return ((tail + 1) % buffer_size) == head ? 1 : 0;
 }
 
-int32_t SerialComm::isEmpty()
+uint32_t SerialComm::isEmpty()
 {
     return head == tail ? 1 : 0;
 }

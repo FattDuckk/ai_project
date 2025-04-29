@@ -26,7 +26,7 @@ public:
 private:
     int pins[SERVO_COUNT] = {SERVO_ROT_PIN, SERVO_LEFT_PIN, SERVO_RIGHT_PIN, SERVO_HAND_ROT_PIN};
     double angles[SERVO_COUNT];
-    double initialiseAngles[SERVO_COUNT] = {0};
+    double initialiseAngles[SERVO_COUNT] = {90, 90, 90, 90}; // Initial angles for the servos
 
     // Maps 0-180 degrees to 1000-2000us pulse
     void writeServoPulse(int pin, int angle);

@@ -4,14 +4,14 @@
 #define METAL // Define robot type
 
 #ifdef METAL
-#define DEVICE_NAME "Metal"
+#define DEVICE_NAME "ROBOT"
 #elif defined(ROBOT)
 #define DEVICE_NAME "Robot"
 #else
 #define DEVICE_NAME "UNKNOWN"
 #endif
 
-#ifdef ROBOTARM
+#ifdef ROBOT
 
 #define BUZZER 3 // HIGH = ON
 #define BT_DETECT_PIN 3

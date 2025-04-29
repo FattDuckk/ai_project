@@ -17,7 +17,7 @@ class SerialComm
 
 public:
     SerialComm();
-    void begin(long baud);
+    void begin();
 
 
     void handleCommand(const String &cmd);
@@ -29,13 +29,15 @@ public:
     void handleSerialData(char data);
 
     void sendError(const String &error);
-    int32_t put(uint8_t value);
-    int32_t get(uint8_t *value);
-    int32_t isFull();
-    int32_t isEmpty();
+    uint32_t put(uint8_t value);
+    uint32_t get(uint8_t *value);
+    uint32_t isFull();
+    uint32_t isEmpty();
     void reportResult(int reportCode, String result);
     void reportButtonEvent(unsigned char buttonId, unsigned char event);
     bool parseCommand(char *message);
+
+    
 
 private:
     
@@ -46,9 +48,13 @@ private:
 	uint8_t *data;
 	uint32_t buffer_size;
 
+    unsigned long lastSerialSendTime = 0;
+    const unsigned long serialSendInterval = 10; // Minimum 10 ms between sends
+
     
 
     uint8_t bufData[RING_BUFFER_SIZE];
 };
+
 
 #endif

@@ -2,13 +2,14 @@ import serial
 import time
 
 # Open the serial connection to the uArm control board
-ser = serial.Serial('/dev/ttyUSB0', 9600)  # Replace with your serial port
+ser = serial.Serial('/dev/ttyUSB0', 115200)  # Replace with your serial port
 time.sleep(2)  # Wait for the uArm to reset
 
 def set_servo_angle(servo, angle):
     # Send the command to set the servo angle (e.g., 'S90,2' for Servo 2)
     command = f"S{angle},{servo}\n"
     ser.write(command.encode())
+    print(command)
 
 def main():
     try:

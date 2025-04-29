@@ -2,18 +2,20 @@
 
 RoboticArm::RoboticArm()
 {
-    RoboticArm::begin();
-    RoboticArm::moveToAngles(initialiseAngles);
+    // begin();
 }
 
 void RoboticArm::begin()
 {
+    Serial.println("Initializing pins...");
     for (int i = 0; i < SERVO_COUNT; i++)
     {
         Serial.print(pins[i]);
         pinMode(pins[i], OUTPUT);
         digitalWrite(pins[i], LOW);
+        Serial.println("Pin initialized");
     }
+    moveToAngles(initialiseAngles);
 }
 
 void RoboticArm::moveToAngles(double* angles)
@@ -22,6 +24,7 @@ void RoboticArm::moveToAngles(double* angles)
     for (int i = 0; i < SERVO_COUNT; i++)
     {
         writeServoPulse(pins[i], angles[i]);
+        Serial.print("Moving to angle");
     }
 }
 
