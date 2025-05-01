@@ -45,12 +45,12 @@ class ClutteredPushGrasp:
         self.yawId = p.addUserDebugParameter("yaw", -np.pi/2, np.pi/2, np.pi/2)
         self.gripper_opening_length_control = p.addUserDebugParameter("gripper_opening_length", 0, 0.085, 0.04)
 
-        self.boxID = p.loadURDF("./urdf/skew-box-button.urdf",
-                                [0.0, 0.0, 0.0],
-                                # p.getQuaternionFromEuler([0, 1.5706453, 0]),
-                                p.getQuaternionFromEuler([0, 0, 0]),
-                                useFixedBase=True,
-                                flags=p.URDF_MERGE_FIXED_LINKS | p.URDF_USE_SELF_COLLISION)
+        # self.boxID = p.loadURDF("./urdf/skew-box-button.urdf",
+        #                         [0.0, 0.0, 0.0],
+        #                         # p.getQuaternionFromEuler([0, 1.5706453, 0]),
+        #                         p.getQuaternionFromEuler([0, 0, 0]),
+        #                         useFixedBase=True,
+        #                         flags=p.URDF_MERGE_FIXED_LINKS | p.URDF_USE_SELF_COLLISION)
 
         # For calculating the reward
         self.box_opened = False
@@ -70,7 +70,7 @@ class ClutteredPushGrasp:
         ]
 
         num_boxes = 12
-        y_range = (-1.3, -1.7)
+        y_range = (0.1, -0.3)
         x_range = (-0.3, 0.3)
         min_distance = 0.08  # Minimum distance between box centers (adjust if needed)
 
@@ -100,13 +100,32 @@ class ClutteredPushGrasp:
                     existing_positions.append(new_pos)
                     placed = True
 
-        if self.vis:
-            p.resetDebugVisualizerCamera(
-                cameraDistance=1.2,      # how far back the camera is
-                cameraYaw=90,            # rotate left/right
-                cameraPitch=-89,         # -89 = looking almost straight down
-                cameraTargetPosition=[0, -1.5, 0.05]   # where the camera looks (center of your boxes)
-            )
+        # if self.vis:
+        #     p.resetDebugVisualizerCamera(
+        #         cameraDistance=1.2,      # how far back the camera is
+        #         cameraYaw=90,            # rotate left/right
+        #         cameraPitch=-89,         # -89 = looking almost straight down
+        #         cameraTargetPosition=[0, -1.5, 0.05]   # where the camera looks (center of your boxes)
+        #     )
+
+        # if self.vis:
+        #     p.resetDebugVisualizerCamera(
+        #         cameraDistance=0.5,      # how far back the camera is
+        #         cameraYaw=90,            # rotate left/right
+        #         cameraPitch=-89,         # -89 = looking almost straight down
+        #         cameraTargetPosition=[0, -1.5, 0.05]   # where the camera looks (center of your boxes)
+        #     )
+
+        # if self.vis:
+        #     for d in np.linspace(100.0, 0.5, num=300):  # Start at 3.0, end at 1.2
+        #         p.resetDebugVisualizerCamera(
+        #             cameraDistance=d,
+        #             cameraYaw=90,
+        #             cameraPitch=-89,
+        #             cameraTargetPosition=[0, -1.5, 0.05]
+        #         )
+        #         time.sleep(1/60)  # 60 FPS smooth zoom-in
+
 
 
     def step_simulation(self):
@@ -143,27 +162,28 @@ class ClutteredPushGrasp:
         for _ in range(120):  # Wait for a few steps
             self.step_simulation()
 
-        reward = self.update_reward()
+        # reward = self.update_reward()
+        reward = 0
         done = True if reward == 1 else False
         info = dict(box_opened=self.box_opened, btn_pressed=self.btn_pressed, box_closed=self.box_closed)
         return self.get_observation(), reward, done, info
 
-    def update_reward(self):
-        reward = 0
-        if not self.box_opened:
-            if p.getJointState(self.boxID, 1)[0] > 1.9:
-                self.box_opened = True
-                print('Box opened!')
-        elif not self.btn_pressed:
-            if p.getJointState(self.boxID, 0)[0] < - 0.02:
-                self.btn_pressed = True
-                print('Btn pressed!')
-        else:
-            if p.getJointState(self.boxID, 1)[0] < 0.1:
-                print('Box closed!')
-                self.box_closed = True
-                reward = 1
-        return reward
+    # def update_reward(self):
+    #     reward = 0
+    #     if not self.box_opened:
+    #         if p.getJointState(self.boxID, 1)[0] > 1.9:
+    #             self.box_opened = True
+    #             print('Box opened!')
+    #     elif not self.btn_pressed:
+    #         if p.getJointState(self.boxID, 0)[0] < - 0.02:
+    #             self.btn_pressed = True
+    #             print('Btn pressed!')
+    #     else:
+    #         if p.getJointState(self.boxID, 1)[0] < 0.1:
+    #             print('Box closed!')
+    #             self.box_closed = True
+    #             reward = 1
+    #     return reward
 
     def get_observation(self):
         obs = dict()
@@ -176,13 +196,13 @@ class ClutteredPushGrasp:
 
         return obs
 
-    def reset_box(self):
-        p.setJointMotorControl2(self.boxID, 0, p.POSITION_CONTROL, force=1)
-        p.setJointMotorControl2(self.boxID, 1, p.VELOCITY_CONTROL, force=0)
+    # def reset_box(self):
+    #     p.setJointMotorControl2(self.boxID, 0, p.POSITION_CONTROL, force=1)
+    #     p.setJointMotorControl2(self.boxID, 1, p.VELOCITY_CONTROL, force=0)
 
     def reset(self):
         self.robot.reset()
-        self.reset_box()
+        # self.reset_box()
         return self.get_observation()
 
     def close(self):
