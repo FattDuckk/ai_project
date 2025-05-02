@@ -9,6 +9,8 @@ class RobotBase(object):
     """
 
     def __init__(self, pos, ori):
+
+
         """
         Arguments:
             pos: [x y z]
@@ -33,6 +35,7 @@ class RobotBase(object):
 
             gripper_range: List[Min, Max]
         """
+
         self.base_pos = pos
         self.base_ori = p.getQuaternionFromEuler(ori)
 
@@ -81,6 +84,7 @@ class RobotBase(object):
         raise NotImplementedError
     
     def __post_load__(self):
+         # Makes it easy for the environment to use
         pass
 
     def reset(self):
@@ -176,6 +180,7 @@ class UR5Robotiq85(RobotBase):
         self.gripper_range = [0, 0.085]
     
     def __post_load__(self):
+        self.eef_link_index = self.eef_id 
         # To control the gripper
         mimic_parent_name = 'finger_joint'
         mimic_children_names = {'right_outer_knuckle_joint': 1,

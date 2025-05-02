@@ -29,6 +29,19 @@ def user_control_demo():
     while True:
         obs, reward, done, info = env.step(env.read_debug_parameter(), 'end')
         # print(obs, reward, done, info)
+        show_gripper_view(env)
+
+import cv2
+
+def show_gripper_view(env):
+    obs = env.get_observation()
+    rgb_img = obs["rgb"]
+
+    # Convert from RGBA to BGR for OpenCV
+    bgr_img = cv2.cvtColor(rgb_img.astype(np.uint8), cv2.COLOR_RGBA2BGR)
+    cv2.imshow("Gripper Camera View", bgr_img)
+    cv2.waitKey(1)  # Show for 1 ms
+
 
 
 if __name__ == '__main__':

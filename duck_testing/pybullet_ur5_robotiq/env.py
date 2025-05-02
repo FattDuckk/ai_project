@@ -21,6 +21,8 @@ class ClutteredPushGrasp:
     SIMULATION_STEP_DELAY = 1 / 240.
 
     def __init__(self, robot, models: Models, camera=None, vis=False) -> None:
+
+
         self.robot = robot
         self.vis = vis
         if self.vis:
@@ -126,6 +128,60 @@ class ClutteredPushGrasp:
         #         )
         #         time.sleep(1/60)  # 60 FPS smooth zoom-in
 
+    def get_observation(self):
+        obs = dict()
+
+        try:
+            # Get gripper pose
+            ee_pos, ee_orn = p.getLinkState(self.robot.id, self.robot.eef_link_index)[:2]
+            print(f"[DEBUG] ee_pos: {ee_pos}, ee_orn: {ee_orn}")
+
+            ee_rot_matrix = p.getMatrixFromQuaternion(ee_orn)
+            ee_rot_matrix = np.array(ee_rot_matrix).reshape(3, 3)
+
+
+            cam_forward = ee_rot_matrix @ np.array([1, 0, 0])
+            cam_up = ee_rot_matrix @ np.array([0, 1, 0])
+            cam_target = ee_pos + 0.1 * cam_forward
+
+            # view_matrix = p.computeViewMatrix(ee_pos, cam_target, cam_up)
+
+            cam_forward = ee_rot_matrix @ np.array([1, 0, 0])     # Forward in X direction
+            cam_forward = cam_forward / np.linalg.norm(cam_forward)
+
+            cam_up = ee_rot_matrix @ np.array([0, 1, 0])           # Y-axis up
+
+            # Move the camera origin FORWARD
+            cam_pos = ee_pos + 0.1 * cam_forward   # 🔧 Try 0.03 to move in front of gripper base
+            cam_target = cam_pos + 0.2 * cam_forward
+
+            view_matrix = p.computeViewMatrix(cam_pos, cam_target, cam_up)
+
+            projection_matrix = p.computeProjectionMatrixFOV(
+                fov=60, aspect=1.0, nearVal=0.01, farVal=2.0
+            )
+
+            width, height, rgba_img, depth_img, seg_img = p.getCameraImage(
+                width=320,
+                height=320,
+                viewMatrix=view_matrix,
+                projectionMatrix=projection_matrix,
+                renderer=p.ER_BULLET_HARDWARE_OPENGL
+            )
+
+            obs["rgb"] = np.reshape(rgba_img, (height, width, 4))
+            obs["depth"] = depth_img
+            obs["seg"] = seg_img
+
+        except Exception as e:
+            print(f"[ERROR] Camera capture failed: {e}")
+
+        obs.update(self.robot.get_joint_obs())
+        return obs
+
+
+
+
 
 
     def step_simulation(self):
@@ -185,16 +241,16 @@ class ClutteredPushGrasp:
     #             reward = 1
     #     return reward
 
-    def get_observation(self):
-        obs = dict()
-        if isinstance(self.camera, Camera):
-            rgb, depth, seg = self.camera.shot()
-            obs.update(dict(rgb=rgb, depth=depth, seg=seg))
-        else:
-            assert self.camera is None
-        obs.update(self.robot.get_joint_obs())
+    # def get_observation(self):
+    #     obs = dict()
+    #     if isinstance(self.camera, Camera):
+    #         rgb, depth, seg = self.camera.shot()
+    #         obs.update(dict(rgb=rgb, depth=depth, seg=seg))
+    #     else:
+    #         assert self.camera is None
+    #     obs.update(self.robot.get_joint_obs())
 
-        return obs
+    #     return obs
 
     # def reset_box(self):
     #     p.setJointMotorControl2(self.boxID, 0, p.POSITION_CONTROL, force=1)
