@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<robot name="medium_box">
+  <link name="base">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.00002" iyy="0.00002" izz="0.00002"/>
+    </inertial>
+
+    <visual>
+      <geometry>
+        <box size="0.05 0.08 0.05"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.05 0.08 0.05"/>
+      </geometry>
+    </collision>
+
+    <dynamics lateral_friction="0.8" restitution="0.1" />
+
+  </link>
+</robot>
