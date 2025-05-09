@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<robot name="large_box">
+  <link name="base">
+    <inertial>
+      <mass value="0.15"/>
+      <inertia ixx="0.00003" iyy="0.00003" izz="0.00003"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.05 0.11 0.05"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.11 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>
