@@ -4,11 +4,16 @@ import time
 import os
 
 # --- Configuration ---
-# Construct the path to the URDF file relative to this script
+# Get the directory where the script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
-# Assumes 'uarm_description' is in the same directory as the script
-urdf_relative_path = os.path.join("uarm_description", "urdf", "urarm.urdf")
-urdf_file_path = os.path.join(script_dir, urdf_relative_path)
+
+# Define the known root directory of your project/package
+# This is the directory that contains the 'uarm_description' folder
+project_root_dir = "/home/matt/ai_project/prox_testing" # <--- Set this to your actual project root
+
+# Define the relative path to the URDF file from the project root
+urdf_relative_path = os.path.join("uarm_description", "urdf", "firefighter.urdf")
+urdf_file_path = os.path.join(project_root_dir, urdf_relative_path)
 
 print(f"Attempting to load URDF file: {urdf_file_path}")
 
@@ -25,10 +30,18 @@ physicsClient = p.connect(p.GUI)
 # Add PyBullet's standard data path for things like the ground plane
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
-# Set gravity (optional, but good practice)
-p.setGravity(0, 0, -9.81)
+# --- IMPORTANT FIX FOR PACKAGE:// PATHS ---
+# Add the directory that serves as the root for your 'package://' paths.
+# Your URDF uses 'package://uarm_description/...'.
+# PyBullet needs to know where the 'uarm_description' directory is located.
+# Based on your file structure, the 'uarm_description' directory is inside
+# your project root. Therefore, the search path should be the project root directory.
+package_search_path = project_root_dir # <--- Set search path to the directory *containing* uarm_description
+p.setAdditionalSearchPath(package_search_path)
+print(f"Added package search path: {package_search_path}")
 
-# Load a ground plane
+p.setAdditionalSearchPath(pybullet_data.getDataPath())  # Set gravity (optional, but good practice) 
+p.setGravity(0, 0, -9.81)  # Load a ground plane 
 planeId = p.loadURDF("plane.urdf")
 
 # --- Load the Robot ---
@@ -57,10 +70,10 @@ except Exception as e:
     print("----------------------------------------")
     print("Troubleshooting tips:")
     print(f"1. Verify the URDF path is correct: {urdf_file_path}")
-    print("2. Check the URDF for XML errors.")
-    print("3. Ensure all mesh (.stl, .dae) files referenced in the URDF exist in the correct") # Added .dae
-    print("   'uarm_description/meshes/' directory relative to the URDF file.")
-    print("4. PyBullet's DAE support might be limited; if errors persist, consider converting DAE to STL/OBJ.") # Added DAE warning
+    print(f"2. Verify the package search path is correct: {package_search_path}")
+    print("3. Check the URDF for XML errors.")
+    print("4. Ensure all mesh (.stl) files referenced in the URDF exist within the")
+    print("   correct subdirectories relative to the package search path.")
     print("5. Check the PyBullet console output for more detailed error messages.")
     p.disconnect()
     exit() # Exit if loading failed
