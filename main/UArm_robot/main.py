@@ -17,7 +17,7 @@ def sandbox_mode():
                 # Print joint positions and end-effector position
             joint_positions = obs[:env.robot.arm_num_dofs]
             ee_position = obs[-3:]
-            print(f"Joint Positions: {np.round(joint_positions, 3)} | End-Effector Position: {np.round(ee_position, 3)}")
+            print(f"Joint Positions: {np.round(joint_positions, 4)} | End-Effector Position: {np.round(ee_position, 4)}")
         step_count += 1
 
         # Capture and display the camera image
@@ -26,9 +26,9 @@ def sandbox_mode():
             # print("Camera Image Captured")
             pass
 
-        time.sleep(0.01)        
+        # time.sleep(0.01)        
         
-        time.sleep(0.01)  # Slow down for readability
+        # time.sleep(0.01)  # Slow down for readability
 
 
 if __name__ == '__main__':

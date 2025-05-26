@@ -10,8 +10,8 @@ class UArm:
         self.id = None
         self.joint_info = None
         self.eef_id = None
-        self.arm_num_dofs = 4  # 4 DOF for UArm
-        self.arm_rest_poses = [0, 0, 0, 0]  # Default rest position
+        self.arm_num_dofs = 5  # 4 DOF for UArm
+        self.arm_rest_poses = [0, 0, 0, 0, 0]  # Default rest position
         self.gripper_range = [0, np.deg2rad(180)]  # Assuming 0 to 180 degrees for gripper
 
 
@@ -199,6 +199,11 @@ class UArm:
 
         # print(f"[INFO] Camera orientation indicator added at {cam_pos}")
 
+
+
+
+
+
     def update_camera_orientation(self, camera_link="camera_link", length=0.05):
         if self.id is None:
             print("[ERROR] Robot not loaded. Cannot update camera orientation.")
@@ -222,4 +227,35 @@ class UArm:
 
 
 
+    def visualize_tool_axes(self, link_name="tool", length=0.05):
+        index = self.get_tool_link_index(link_name)
+        if index is None:
+            return
+
+        pos, orn = p.getLinkState(self.id, index)[:2]
+        rot = np.array(p.getMatrixFromQuaternion(orn)).reshape(3, 3)
+
+        x_axis = pos + length * rot[:, 0]
+        y_axis = pos + length * rot[:, 1]
+        z_axis = pos + length * rot[:, 2]
+
+        self.tool_x = p.addUserDebugLine(pos, x_axis, [1, 0, 0], 2)
+        self.tool_y = p.addUserDebugLine(pos, y_axis, [0, 1, 0], 2)
+        self.tool_z = p.addUserDebugLine(pos, z_axis, [0, 0, 1], 2)
+
+    def update_tool_axes(self, link_name="tool", length=0.05):
+        index = self.get_tool_link_index(link_name)
+        if index is None:
+            return
+
+        pos, orn = p.getLinkState(self.id, index)[:2]
+        rot = np.array(p.getMatrixFromQuaternion(orn)).reshape(3, 3)
+
+        x_axis = pos + length * rot[:, 0]
+        y_axis = pos + length * rot[:, 1]
+        z_axis = pos + length * rot[:, 2]
+
+        p.addUserDebugLine(pos, x_axis, [1, 0, 0], 2, replaceItemUniqueId=self.tool_x)
+        p.addUserDebugLine(pos, y_axis, [0, 1, 0], 2, replaceItemUniqueId=self.tool_y)
+        p.addUserDebugLine(pos, z_axis, [0, 0, 1], 2, replaceItemUniqueId=self.tool_z)
 
