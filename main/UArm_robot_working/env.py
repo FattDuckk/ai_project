@@ -14,7 +14,7 @@ class UArmEnv(gym.Env):
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
         
-        self.max_steps = 2000
+        self.max_steps = 500
         self.current_step = 0
         self.global_step = 0
         self.success_count = 0
@@ -222,7 +222,7 @@ class UArmEnv(gym.Env):
         # done = dist_to_goal < 0.05
         self.current_step += 1
         self.global_step += 1
-        if dist_to_goal < 0.1 :
+        if dist_to_goal < 0.06 :
             # print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
             # Reset the environment if goal is reached
             done = True
