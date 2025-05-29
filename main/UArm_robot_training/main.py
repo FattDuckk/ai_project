@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from env_box import UArmEnv
+from env_goals import UArmEnv
 import pybullet as p
 
 def sandbox_mode():

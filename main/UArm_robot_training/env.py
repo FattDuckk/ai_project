@@ -75,22 +75,36 @@ class UArmEnv(gym.Env):
         # The hand moves between 0.2 to 0.4 from its base, so keep it within 0.3
         box_height = 0.25
 
-        red_angle = -1.3
-        red_goal_pos = [(- 0.3 * np.sin(red_angle)), (- 0.3 * np.cos(red_angle)), 0.001]
-        self.goal_id_red = p.loadURDF("urdf/goal_zone_red.urdf", basePosition=red_goal_pos)
-        self.goal_pos_red = np.array([red_goal_pos[0], red_goal_pos[1], 0.03])  # for the arm to reach, added box height
+        # red_angle = -1.3
+        # red_goal_pos = [(- 0.3 * np.sin(red_angle)), (- 0.3 * np.cos(red_angle)), 0.001]
+        # self.goal_id_red = p.loadURDF("urdf/goal_zone_red.urdf", basePosition=red_goal_pos)
+        # self.goal_pos_red = np.array([red_goal_pos[0], red_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
+        # green_angle = 0.60 #rad, 22.5 degrees, 1/4 of a quater circle
+        # green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle)), 0.001]
+
+        # self.goal_id_green = p.loadURDF("urdf/goal_zone_green.urdf", basePosition=green_goal_pos)
+        # self.goal_pos_green = np.array([green_goal_pos[0],green_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
+        # blue_angle = 1.3
+        # blue_goal_pos = [(- 0.3 * np.sin(blue_angle)), (- 0.3 * np.cos(blue_angle)), 0.001]
+        # self.goal_id_blue = p.loadURDF("urdf/goal_zone_blue.urdf", basePosition=blue_goal_pos)
+        # self.goal_pos_blue = np.array([blue_goal_pos[0], blue_goal_pos[1], 0.03])
 
         green_angle = 0.60 #rad, 22.5 degrees, 1/4 of a quater circle
         green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle)), 0.001]
-
         self.goal_id_green = p.loadURDF("urdf/goal_zone_green.urdf", basePosition=green_goal_pos)
         self.goal_pos_green = np.array([green_goal_pos[0],green_goal_pos[1], 0.03])  # for the arm to reach, added box height
 
-        blue_angle = 1.3
-        blue_goal_pos = [(- 0.3 * np.sin(blue_angle)), (- 0.3 * np.cos(blue_angle)), 0.001]
+        # red_angle = -1.3
+        red_goal_pos = [(green_goal_pos[0]), (green_goal_pos[1]+0.07), 0.001]
+        self.goal_id_red = p.loadURDF("urdf/goal_zone_red.urdf", basePosition=red_goal_pos)
+        self.goal_pos_red = np.array([red_goal_pos[0], red_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
+        # blue_angle = 1.3
+        blue_goal_pos = [(green_goal_pos[0]), (green_goal_pos[1]-0.07), 0.001]
         self.goal_id_blue = p.loadURDF("urdf/goal_zone_blue.urdf", basePosition=blue_goal_pos)
         self.goal_pos_blue = np.array([blue_goal_pos[0], blue_goal_pos[1], 0.03])
-
 
         # self.robot.visualize_end_effector()
         self.robot.visualize_camera_orientation("camera_link")
@@ -162,7 +176,7 @@ class UArmEnv(gym.Env):
             self.goal_pos_blue
         ]
 
-        if np.random.uniform() < 0.3:
+        if np.random.uniform() < 0.7:
             # 📦 Choose from spawn positions
             x, y = random.choice(self.spawn_positions_xy)
             x += np.random.uniform(-0.005, 0.005)
@@ -190,7 +204,7 @@ class UArmEnv(gym.Env):
             joint1 = np.clip(action[0], -np.pi/2, np.pi/2) 
             joint2 = np.clip(action[1], -np.pi*0.4, np.pi) 
             joint3 = np.clip(action[2], -np.pi/2, np.pi*0.12) 
-            release_toggle = action[3] > 0.5
+            release_toggle = False
             self.r_toggled = not release_toggle if self.picked_up else release_toggle
         else:
             # Manual debug mode with sliders
@@ -296,7 +310,7 @@ class UArmEnv(gym.Env):
         # done = dist_to_goal < 0.05
         self.current_step += 1
         self.global_step += 1
-        if dist_to_goal < 0.025 :
+        if dist_to_goal < 0.035 :
             print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
             # Reset the environment if goal is reached
             done = True
