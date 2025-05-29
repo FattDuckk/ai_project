@@ -124,24 +124,56 @@ class UArmEnv(gym.Env):
             self.boxes.append(box_id)
             self.box_instances.append((box_id, class_id))
 
-        ran_new_or_goal = np.random.uniform(0, 1) > 0.1
-        if ran_new_or_goal:
-            ef_rad = np.random.uniform(-1.5, 1.5)
-            ef_dist = np.random.uniform(0.2, 0.4)  # distance from base
-            x = -ef_dist * np.sin(ef_rad)
-            y = -ef_dist * np.cos(ef_rad)
-            z = np.random.uniform(0.025, 0.075)  # fixed height for the end-effector
+        # ran_new_or_goal = np.random.uniform(0, 1) > 0.1
+        # if ran_new_or_goal:
+        #     ef_rad = np.random.uniform(-1.5, 1.5)
+        #     ef_dist = np.random.uniform(0.2, 0.4)  # distance from base
+        #     x = -ef_dist * np.sin(ef_rad)
+        #     y = -ef_dist * np.cos(ef_rad)
+        #     z = np.random.uniform(0.025, 0.075)  # fixed height for the end-effector
+        #     self.goal_pos = np.array([x, y, z])
+        # else:
+        #     # Randomly choose one of the predefined goal positions
+        #     goal_choice = np.random.choice(['red', 'green', 'blue'])
+        #     if goal_choice == 'red':
+        #         self.goal_pos = self.goal_pos_red
+        #     elif goal_choice == 'green':
+        #         self.goal_pos = self.goal_pos_green
+        #     else:
+        #         self.goal_pos = self.goal_pos_blue
+        # self.goal_pos = self.goal_pos_red
+
+        self.spawn_positions_xy = [
+            (0.040, -0.390),
+            (0.040, -0.320),
+            (0.040, -0.250),
+            (0.110, -0.250),
+            (0.110, -0.390),
+            (0.110, -0.320),
+            (0.180, -0.250),
+            (0.180, -0.320),
+            (0.180, -0.390),
+        ]
+        self.spawn_z_values = [0.025, 0.075]
+
+        self.goal_positions = [
+            self.goal_pos_red,
+            self.goal_pos_green,
+            self.goal_pos_blue
+        ]
+
+        if np.random.uniform() < 0.3:
+            # 📦 Choose from spawn positions
+            x, y = random.choice(self.spawn_positions_xy)
+            x += np.random.uniform(-0.005, 0.005)
+            y += np.random.uniform(-0.005, 0.005)
+            z = random.choice(self.spawn_z_values)
             self.goal_pos = np.array([x, y, z])
         else:
-            # Randomly choose one of the predefined goal positions
-            goal_choice = np.random.choice(['red', 'green', 'blue'])
-            if goal_choice == 'red':
-                self.goal_pos = self.goal_pos_red
-            elif goal_choice == 'green':
-                self.goal_pos = self.goal_pos_green
-            else:
-                self.goal_pos = self.goal_pos_blue
-        # self.goal_pos = self.goal_pos_red
+            # 🎯 Choose from goal zones (z is always 0.03)
+            self.goal_pos = random.choice(self.goal_positions)
+
+
         print(f"Goal position set to: {self.goal_pos}")
         
 
@@ -264,7 +296,7 @@ class UArmEnv(gym.Env):
         # done = dist_to_goal < 0.05
         self.current_step += 1
         self.global_step += 1
-        if dist_to_goal < 0.01 :
+        if dist_to_goal < 0.02 :
             print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
             # Reset the environment if goal is reached
             done = True
@@ -278,7 +310,7 @@ class UArmEnv(gym.Env):
         if self.global_step % 20000 == 0:
             print(f"📊 Step {self.global_step} | ✅ Successes: {self.success_count} | ⏱️ Timeouts: {self.timeout_count}")
 
-
+        # print("Reward:", reward)
         # current_gripper_state = action[3]
         # self.just_dropped = self.holding_box and current_gripper_state < 0
         # self.holding_box = current_gripper_state > 0
