@@ -6,6 +6,7 @@ from gym import spaces
 from robot import UArm
 import time
 from utilities import Camera
+import random
 
 class UArmEnv(gym.Env):
     def __init__(self, render=False):
@@ -14,6 +15,11 @@ class UArmEnv(gym.Env):
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
         
+        self.max_steps = 500
+        self.current_step = 0
+        self.global_step = 0
+        self.success_count = 0
+        self.timeout_count = 0
 
         # Load the robot and plane
         self.robot = UArm()
@@ -29,7 +35,8 @@ class UArmEnv(gym.Env):
    
 
         self.action_space = spaces.Box(low=-1, high=1, shape=(4,), dtype=np.float32)
-        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(self.robot.arm_num_dofs * 2 + 3,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,), dtype=np.float32)
+
 
         # Add sliders for real-time control
         self.sliders = {
@@ -51,10 +58,12 @@ class UArmEnv(gym.Env):
 
     def reset(self):
         p.resetSimulation()
+        
         p.setGravity(0, 0, -9.81)
         self.planeID = p.loadURDF("plane.urdf")
         self.robot.load('./urdf/UArm.urdf')
         self.robot.reset_arm()
+        self.current_step = 0  
 
         # Spawn the goal zone:
         # The hand moves between 0.2 to 0.4 from its base, so keep it within 0.3
@@ -81,19 +90,94 @@ class UArmEnv(gym.Env):
         self.robot.visualize_camera_orientation("camera_link")
         self.robot.visualize_tool_axes("tool")
 
-        # # Spawns boxes
-        # self.boxes = []
-        # # Boxes specifications
-        # box_specs = [
-        #     ("box_small.urdf", 4),
-        #     ("box_medium.urdf", 3),
-        #     ("box_large.urdf", 3)
 
+
+
+        self.boxes = []
+        self.box_instances = []  # [(box_id, class_id)]
+
+        box_types = [
+            (0, "box_small.urdf"),
+            (1, "box_medium.urdf"),
+            (2, "box_large.urdf"),
+        ]
+
+        box_specs = []
+        for _ in range(9):  # 3x3 grid
+            box_specs.append(random.choice(box_types))
+
+        start_x = 0.04
+        start_y = -0.25
+        spacing_x = 0.07
+        spacing_y = 0.07
+
+        for idx, (class_id, box_file) in enumerate(box_specs):
+            row = idx // 3
+            col = idx % 3
+            x = start_x + col * spacing_x
+            y = start_y - row * spacing_y
+            pos = [x, y, 0.025]
+            box_id = p.loadURDF(f"boxes/{box_file}", basePosition=pos)
+            self.boxes.append(box_id)
+            self.box_instances.append((box_id, class_id))
+
+
+
+        # self.boxes = []
+        # box_types = [
+        #     (0, "box_small.urdf"),
+        #     (1, "box_medium.urdf"),
+        #     (2, "box_large.urdf"),
         # ]
 
-        # start_x = 0.05
+        # start_x = 0.04
+        # start_y = -0.25
+        # spacing_x = 0.07
+        # spacing_y = 0.07
+
+        # self.spawned_boxes = []  # for logging metadata
+
+        # for row in range(3):
+        #     for col in range(3):
+        #         class_id, box_file = random.choice(box_types)
+        #         x = start_x + col * spacing_x
+        #         y = start_y - row * spacing_y
+        #         pos = [x, y, 0.025]
+        #         box_id = p.loadURDF(f"boxes/{box_file}", basePosition=pos)
+        #         self.boxes.append(box_id)
+        #         self.spawned_boxes.append({
+        #             "class_id": class_id,
+        #             "urdf": box_file,
+        #             "position": pos,
+        #             "id": box_id
+        #         })
+
+
+        # Spawns boxes
+        # self.boxes = []
+        # # Boxes specifications
+        # # box_specs = [
+        # #     ("box_small.urdf", 3),
+        # #     ("box_medium.urdf", 3),
+        # #     ("box_large.urdf", 3)
+
+        # # ]
+        # box_types = [
+        #     (0, "box_small.urdf"),
+        #     (1, "box_medium.urdf"),
+        #     (2, "box_large.urdf"),
+        # ]
+
+        # box_specs = []
+
+        # for i in range(3):
+        #     for y in range(3):
+        #         box_specs.append(random.choice(box_types))
+
+
+        # start_x = 0.04
         # start_y = -0.25     # top row
-        # spacing_x = 0.04  # distance between boxes
+        # spacing_x = 0.07  # distance between boxes
         # spacing_y = 0.07  # distance between rows
 
         # for row_idx, (box_file, count) in enumerate(box_specs):
@@ -103,23 +187,42 @@ class UArmEnv(gym.Env):
         #         pos = [x, y, 0.025]
         #         box = p.loadURDF(f"boxes/{box_file}", basePosition=pos)
         #         self.boxes.append(box)
-        #     spacing_x += 0.01
+        #     # spacing_x += 0.01
 
-        # Spawns one box for training
-        green_box_pos = [0.15, -0.25, 0.025]  # start closer to robot
-        box_file = "box_medium.urdf"     # name your green box file clearly
-        box_id = p.loadURDF(f"./boxes/{box_file}", basePosition=green_box_pos)
-        self.boxes = [box_id]
-        self.target_box = box_id
+        # # Spawns one box for training
+        # green_box_pos = [0.15, -0.25, 0.025]  # start closer to robot
+        # box_file = "box_medium.urdf"     # name your green box file clearly
+        # box_id = p.loadURDF(f"./boxes/{box_file}", basePosition=green_box_pos)
+        # self.boxes = [box_id]
+        # self.target_box = box_id
 
+        ef_rad = np.random.uniform(-1.5, 1.5)
+        ef_dist = np.random.uniform(0.2, 0.4)  # distance from base
+        x = -ef_dist * np.sin(ef_rad)
+        y = -ef_dist * np.cos(ef_rad)
+        z = 0.025  # fixed height for the end-effector
+        self.goal_pos = np.array([x, y, z])
 
         return self._get_obs()
 
     def step(self, action=None):
         # Read joint sliders
-        joint1 = p.readUserDebugParameter(self.sliders['joint1'])
-        joint2 = p.readUserDebugParameter(self.sliders['joint2'])
-        joint3 = p.readUserDebugParameter(self.sliders['joint3'])
+        reward = 0.0
+        done = False
+
+
+        if action is not None:
+            # PPO mode
+            joint1 = np.clip(action[0], -np.pi/2, np.pi/2) 
+            joint2 = np.clip(action[1], -np.pi*0.4, np.pi) 
+            joint3 = np.clip(action[2], -np.pi/2, np.pi*0.12) 
+            release_toggle = action[3] > 0.5
+            self.r_toggled = not release_toggle if self.picked_up else release_toggle
+        else:
+            # Manual debug mode with sliders
+            joint1 = p.readUserDebugParameter(self.sliders['joint1'])
+            joint2 = p.readUserDebugParameter(self.sliders['joint2'])
+            joint3 = p.readUserDebugParameter(self.sliders['joint3'])
 
         # Auto-compensate wrist tilt
         joint4 = -joint2 - joint3
@@ -164,7 +267,6 @@ class UArmEnv(gym.Env):
             self.held_box = None
             print("👐 Box released.")
 
-
         # Manual release with 'R'
         keys = p.getKeyboardEvents()
         r_pressed = ord('r') in keys and keys[ord('r')] & p.KEY_WAS_TRIGGERED
@@ -177,13 +279,9 @@ class UArmEnv(gym.Env):
         # Save state for next frame
         self.last_r_pressed = r_pressed
 
-
-
-
         # Update camera visuals
         self.robot.update_camera_orientation("camera_link")
         self.robot.update_tool_axes("tool")
-
 
 
         for _ in range(10):  # Try 30–120 steps per frame
@@ -192,20 +290,43 @@ class UArmEnv(gym.Env):
                 time.sleep(1/240)
 
 
-
         # Get obs and reward
         obs = self._get_obs()
-        reward = -np.linalg.norm(obs[-3:])
-        done = False
+        ee_pos = self.robot.get_joint_obs()['ee_pos']
+        dist_to_goal = np.linalg.norm(np.array(ee_pos) - self.goal_pos)
+        reward = -dist_to_goal
+
+        # done = dist_to_goal < 0.05
+        self.current_step += 1
+        self.global_step += 1
+        if dist_to_goal < 0.06 :
+            # print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
+            # Reset the environment if goal is reached
+            done = True
+            reward += 2.0  # Bonus for reaching the goal
+            self.success_count += 1
+
+        if self.current_step >= self.max_steps:
+            done = True
+            # print(f"⏱️ Timeout at Step {self.current_step} | EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)}")
+            self.timeout_count += 1
+        if self.global_step % 20000 == 0:
+            print(f"📊 Step {self.global_step} | ✅ Successes: {self.success_count} | ⏱️ Timeouts: {self.timeout_count}")
         return obs, reward, done, {}
 
 
+    # def _get_obs(self):
+    #     joint_obs = self.robot.get_joint_obs()
+    #     positions = joint_obs['positions']
+    #     velocities = joint_obs['velocities']
+    #     ee_pos = joint_obs['ee_pos']
+    #     return np.concatenate([positions, velocities, ee_pos])
     def _get_obs(self):
         joint_obs = self.robot.get_joint_obs()
-        positions = joint_obs['positions']
-        velocities = joint_obs['velocities']
+        joint_pos = joint_obs['positions'][:3]       # only joints 1-3
         ee_pos = joint_obs['ee_pos']
-        return np.concatenate([positions, velocities, ee_pos])
+        return np.concatenate([joint_pos, ee_pos, self.goal_pos])  # shape: (9,)
+
 
     def render(self, mode='human'):
         pass  # PyBullet handles rendering automatically
@@ -223,6 +344,338 @@ class UArmEnv(gym.Env):
         self.camera.update_view_matrix(cam_pos, cam_target, cam_up)
         rgb, depth = self.camera.capture_image()
         return rgb, depth
+    
+    def get_box_positions(self):
+        """
+        Returns list of dicts: [{'class_id': 0, 'world_pos': [x, y, z], 'size': [sx, sy, sz]}, ...]
+        """
+        info = []
+        for box_id, box_meta in self.spawned_boxes:  # assuming you track them
+            pos, _ = p.getBasePositionAndOrientation(box_id)
+            size = box_meta['size']  # or hardcoded
+            info.append({'class_id': 0, 'world_pos': pos, 'size': size})
+        return info
+
+    def capture_single_image(self, save_path="test_image.png"):
+        rgb, _ = self.get_camera_image()
+        if rgb is not None:
+            import cv2
+            rgb = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+            cv2.imwrite(save_path, rgb)
+            print(f"✅ Saved image to {save_path}")
+        else:
+            print("❌ Camera image not captured.")
+        rgb, _ = self.get_camera_image()
+
+        cam_pos, cam_forward, cam_up = self.robot.get_camera_pose("camera_link")
+        cam_target = cam_pos + cam_forward
+
+        print(f"Camera Position: {cam_pos}")
+        print(f"Camera Forward: {cam_forward}")
+        print(f"Camera Target:  {cam_target}")
+
+
+
+    def capture_image_and_dummy_label(self, base_dir, image_index):
+        import os
+        import cv2
+
+        # --- Save image ---
+        rgb, _ = self.get_camera_image()
+        if rgb is None:
+            print("❌ Failed to capture image.")
+            return
+
+        image_dir = os.path.join(base_dir, "images")
+        label_dir = os.path.join(base_dir, "labels")
+        os.makedirs(image_dir, exist_ok=True)
+        os.makedirs(label_dir, exist_ok=True)
+
+        image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
+        rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+        cv2.imwrite(image_path, rgb_bgr)
+
+        # --- YOLO Label Generation ---
+        width, height = self.camera.width, self.camera.height
+
+        # Define camera view bounds manually (these should match what the camera sees)
+        X_MIN, X_MAX = -0.170, 0.210
+        Y_MIN, Y_MAX = -0.490, -0.120
+
+        box_width_map = {
+            0: 0.035,  # small
+            1: 0.04,  # medium
+            2: 0.05   # large
+        }
+
+        box_length_map = {
+            0: 0.04,  # small
+            1: 0.04,  # medium
+            2: 0.04   # large
+        }
+
+        label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
+        with open(label_path, "w") as f:
+            for box_id, class_id in self.box_instances:
+                pos, _ = p.getBasePositionAndOrientation(box_id)
+                x_world, y_world, _ = pos
+
+                # Skip boxes outside view
+                if not (X_MIN <= x_world <= X_MAX and Y_MIN <= y_world <= Y_MAX):
+                    continue
+
+                # Convert world to image-normalised coordinates
+                x_center = 1.0 - (x_world - X_MIN) / (X_MAX - X_MIN)  # because +X is to the left
+                y_center = (y_world - Y_MIN) / (Y_MAX - Y_MIN)  # because +Y is upward
+
+
+
+                # # Use normalised size estimate
+                # size = box_size_map[class_id]
+                # box_w = size / (X_MAX - X_MIN)
+                # box_h = size / (Y_MAX - Y_MIN)
+
+                size_length = box_length_map[class_id]
+                box_h = size_length / (X_MAX - X_MIN)
+
+                size_width = box_width_map[class_id]
+                box_w = size_width / (Y_MAX - Y_MIN)
+
+                f.write(f"{class_id} {x_center:.6f} {y_center:.6f} {box_w:.6f} {box_h:.6f}\n")
+
+        print(f"✅ Saved image + YOLO label to: {image_path}, {label_path}")
+
+    def estimate_camera_bounds(self, grid_res=0.01):
+        in_view = []
+
+        view_matrix = np.array(self.camera.view_matrix).reshape(4, 4, order='F')
+        proj_matrix = np.array(self.camera.projection_matrix).reshape(4, 4, order='F')
+
+        # World grid (flat XY plane at z=0.025)
+        X = np.arange(-0.5, 0.5, grid_res)
+        Y = np.arange(-0.5, 0.5, grid_res)
+        Z = 0.025
+
+        for x in X:
+            for y in Y:
+                world = np.array([x, y, Z, 1.0])
+                clip = proj_matrix @ (view_matrix @ world)
+                if clip[3] == 0:
+                    continue
+                ndc = clip[:3] / clip[3]
+                x_ndc, y_ndc = ndc[0], ndc[1]
+                if -1 <= x_ndc <= 1 and -1 <= y_ndc <= 1:
+                    in_view.append((x, y))
+
+        if not in_view:
+            print("❌ No points detected in view!")
+            return
+
+        x_vals, y_vals = zip(*in_view)
+        print("✅ Camera visible bounds:")
+        print(f"X_MIN = {min(x_vals):.3f}, X_MAX = {max(x_vals):.3f}")
+        print(f"Y_MIN = {min(y_vals):.3f}, Y_MAX = {max(y_vals):.3f}")
+
+
+    def capture_image_label_and_gt(self, base_dir, image_index):
+        import os
+        import cv2
+
+        # Get image from top-down camera
+        rgb, _ = self.get_camera_image()
+        if rgb is None:
+            print("❌ Failed to capture image.")
+            return
+
+        # Create folders
+        image_dir = os.path.join(base_dir, "images")
+        label_dir = os.path.join(base_dir, "labels")
+        gt_dir = os.path.join(base_dir, "gt_locations")
+        os.makedirs(image_dir, exist_ok=True)
+        os.makedirs(label_dir, exist_ok=True)
+        os.makedirs(gt_dir, exist_ok=True)
+
+        # Save image
+        image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
+        rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+        cv2.imwrite(image_path, rgb_bgr)
+
+        # Camera view bounds
+        X_MIN, X_MAX = -0.170, 0.210
+        Y_MIN, Y_MAX = -0.490, -0.120
+
+        box_width_map = {
+            0: 0.035,  # small
+            1: 0.04,  # medium
+            2: 0.05   # large
+        }
+
+        box_length_map = {
+            0: 0.04,  # small
+            1: 0.04,  # medium
+            2: 0.04   # large
+        }
+
+        # Save YOLO label and GT world coordinates
+        label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
+        gt_path = os.path.join(gt_dir, f"image_{image_index:04}.txt")
+
+        with open(label_path, "w") as f_label, open(gt_path, "w") as f_gt:
+            for box_id, class_id in self.box_instances:
+                pos, _ = p.getBasePositionAndOrientation(box_id)
+                x_world, y_world, _ = pos
+
+                # Normalise to YOLO format
+                x_center = 1.0 - (x_world - X_MIN) / (X_MAX - X_MIN)  # because +X is left
+                y_center = (y_world - Y_MIN) / (Y_MAX - Y_MIN)  # because -Y is up
+
+                # box_size = box_size_map[class_id]
+                # box_w = box_size / (X_MAX - X_MIN)
+                # box_h = box_size / (Y_MAX - Y_MIN)
+
+                size_length = box_length_map[class_id]
+                box_h = size_length / (X_MAX - X_MIN)
+
+                size_width = box_width_map[class_id]
+                box_w = size_width / (Y_MAX - Y_MIN)
+
+                # Write label
+                f_label.write(f"{class_id} {x_center:.6f} {y_center:.6f} {box_w:.6f} {box_h:.6f}\n")
+
+                # Write ground truth world position
+                f_gt.write(f"{class_id} {x_world:.6f} {y_world:.6f}\n")
+
+        print(f"✅ Saved image, label, and ground truth for image_{image_index:04}")
+
+
+
+
+    # def capture_image_and_dummy_label(self, base_dir, image_index):
+    #     import os
+    #     import cv2
+
+    #     rgb, _ = self.get_camera_image()
+    #     if rgb is None:
+    #         print("❌ Failed to capture image.")
+    #         return
+
+    #     # Create directories
+    #     image_dir = os.path.join(base_dir, "images")
+    #     label_dir = os.path.join(base_dir, "labels")
+    #     os.makedirs(image_dir, exist_ok=True)
+    #     os.makedirs(label_dir, exist_ok=True)
+
+    #     # Save image
+    #     image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
+    #     rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+    #     cv2.imwrite(image_path, rgb_bgr)
+
+    #     # Save dummy YOLO label
+    #     label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
+    #     with open(label_path, "w") as f:
+    #         for box_id, class_id in self.box_instances:
+    #             pos, _ = p.getBasePositionAndOrientation(box_id)
+    #             screen_pos = self.project_to_image(pos)
+
+    #             if screen_pos:  # If inside view
+    #                 cx, cy = screen_pos
+    #                 f.write(f"{class_id} {cx:.6f} {cy:.6f} 0.08 0.08\n")  # assume box size ~8%
+
+
+    #     print(f"✅ Saved image and dummy label to folders (index {image_index:04})")
+    # def capture_image_and_dummy_label(self, base_dir, image_index):
+    #     import os
+    #     import cv2
+
+    #     rgb, _ = self.get_camera_image()
+    #     if rgb is None:
+    #         print("❌ Failed to capture image.")
+    #         return
+
+    #     # Create directories
+    #     image_dir = os.path.join(base_dir, "images")
+    #     label_dir = os.path.join(base_dir, "labels")
+    #     os.makedirs(image_dir, exist_ok=True)
+    #     os.makedirs(label_dir, exist_ok=True)
+
+    #     # Save image
+    #     image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
+    #     rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+    #     cv2.imwrite(image_path, rgb_bgr)
+
+    #     # Save dummy YOLO label
+    #     label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
+    #     with open(label_path, "w") as f:
+    #         for box_id, class_id in self.box_instances:
+    #             pos, _ = p.getBasePositionAndOrientation(box_id)
+    #             screen_pos = self.project_to_image(pos)
+
+    #             if screen_pos:  # If inside view
+    #                 cx, cy = screen_pos
+    #                 f.write(f"{class_id} {cx:.6f} {cy:.6f} 0.08 0.08\n")  # assume box size ~8%
+
+
+        # print(f"✅ Saved image and dummy label to folders (index {image_index:04})")
+    # def capture_image_and_label(self, base_dir, image_index):
+    #     import os, cv2
+
+    #     rgb, _ = self.get_camera_image()
+    #     if rgb is None:
+    #         print("❌ Failed to capture image.")
+    #         return
+
+    #     image_dir = os.path.join(base_dir, "images")
+    #     label_dir = os.path.join(base_dir, "labels")
+    #     os.makedirs(image_dir, exist_ok=True)
+    #     os.makedirs(label_dir, exist_ok=True)
+
+    #     image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
+    #     rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+    #     cv2.imwrite(image_path, rgb_bgr)
+
+    #     box_size_map = {0: 0.04, 1: 0.06, 2: 0.08}
+
+    #     label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
+    #     with open(label_path, "w") as f:
+    #         for box_id, class_id in self.box_instances:
+    #             pos, _ = p.getBasePositionAndOrientation(box_id)
+    #             screen_pos = self.project_to_image(pos)
+    #             if screen_pos:
+    #                 cx, cy = screen_pos
+    #                 cx /= self.image_width
+    #                 cy /= self.image_height
+    #                 box_size = box_size_map.get(class_id, 0.05)
+    #                 norm_size = box_size / self.image_width
+    #                 f.write(f"{class_id} {cx:.6f} {cy:.6f} {norm_size:.6f} {norm_size:.6f}\n")
+
+    #     print(f"✅ Saved image and label to folders (index {image_index:04})")
+
+
+
+
+def capture_global_view():
+    camera_target = [0, 0, 0]           # center of the robot
+    camera_pos = [0.5, 0.5, 0.5]        # adjust for your best view
+    camera_up = [0, 0, 1]
+
+    view_matrix = p.computeViewMatrix(
+        cameraEyePosition=camera_pos,
+        cameraTargetPosition=camera_target,
+        cameraUpVector=camera_up
+    )
+
+    projection_matrix = p.computeProjectionMatrixFOV(
+        fov=60, aspect=1.0, nearVal=0.01, farVal=10.0
+    )
+
+    width, height, rgbPixels, _, _ = p.getCameraImage(
+        width=320, height=320,
+        viewMatrix=view_matrix,
+        projectionMatrix=projection_matrix
+    )
+
+    return np.reshape(rgbPixels, (height, width, 4))[:, :, :3]
+
 
     
 

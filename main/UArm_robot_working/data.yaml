@@ -1,0 +1,5 @@
+train: ./train_dataset/images
+val: ./train_dataset/images  # You can later create a val split
+
+nc: 3
+names: ['small', 'medium', 'large']
