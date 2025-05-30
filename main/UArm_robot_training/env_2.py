@@ -91,8 +91,13 @@ class UArmEnv(gym.Env):
         # self.goal_id_blue = p.loadURDF("urdf/goal_zone_blue.urdf", basePosition=blue_goal_pos)
         # self.goal_pos_blue = np.array([blue_goal_pos[0], blue_goal_pos[1], 0.03])
 
+        # green_angle = 0.60 #rad, 22.5 degrees, 1/4 of a quater circle
+        # green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle))+0.007, 0.001]
+        # self.goal_id_green = p.loadURDF("urdf/goal_zone_green.urdf", basePosition=green_goal_pos)
+        # self.goal_pos_green = np.array([green_goal_pos[0],green_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
         green_angle = 0.60 #rad, 22.5 degrees, 1/4 of a quater circle
-        green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle)), 0.001]
+        green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle)+0.027), 0.001]
         self.goal_id_green = p.loadURDF("urdf/goal_zone_green.urdf", basePosition=green_goal_pos)
         self.goal_pos_green = np.array([green_goal_pos[0],green_goal_pos[1], 0.03])  # for the arm to reach, added box height
 
@@ -310,6 +315,11 @@ class UArmEnv(gym.Env):
         # done = dist_to_goal < 0.05
         self.current_step += 1
         self.global_step += 1
+
+        # Check if z is below 0.02
+        if ee_pos[2] < 0.02:
+            reward -= 0.1  # Penalty for dropping too low. Prevent from hitting boxes
+
         if dist_to_goal < 0.02 :
             # print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
             # Reset the environment if goal is reached
