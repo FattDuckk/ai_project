@@ -75,22 +75,36 @@ class UArmEnv(gym.Env):
         # The hand moves between 0.2 to 0.4 from its base, so keep it within 0.3
         box_height = 0.25
 
-        red_angle = -1.3
-        red_goal_pos = [(- 0.3 * np.sin(red_angle)), (- 0.3 * np.cos(red_angle)), 0.001]
-        self.goal_id_red = p.loadURDF("urdf/goal_zone_red.urdf", basePosition=red_goal_pos)
-        self.goal_pos_red = np.array([red_goal_pos[0], red_goal_pos[1], 0.03])  # for the arm to reach, added box height
+        # red_angle = -1.3
+        # red_goal_pos = [(- 0.3 * np.sin(red_angle)), (- 0.3 * np.cos(red_angle)), 0.001]
+        # self.goal_id_red = p.loadURDF("urdf/goal_zone_red.urdf", basePosition=red_goal_pos)
+        # self.goal_pos_red = np.array([red_goal_pos[0], red_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
+        # green_angle = 0.60 #rad, 22.5 degrees, 1/4 of a quater circle
+        # green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle)), 0.001]
+
+        # self.goal_id_green = p.loadURDF("urdf/goal_zone_green.urdf", basePosition=green_goal_pos)
+        # self.goal_pos_green = np.array([green_goal_pos[0],green_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
+        # blue_angle = 1.3
+        # blue_goal_pos = [(- 0.3 * np.sin(blue_angle)), (- 0.3 * np.cos(blue_angle)), 0.001]
+        # self.goal_id_blue = p.loadURDF("urdf/goal_zone_blue.urdf", basePosition=blue_goal_pos)
+        # self.goal_pos_blue = np.array([blue_goal_pos[0], blue_goal_pos[1], 0.03])
 
         green_angle = 0.60 #rad, 22.5 degrees, 1/4 of a quater circle
         green_goal_pos = [(- 0.3 * np.sin(green_angle)), (- 0.3 * np.cos(green_angle)), 0.001]
-
         self.goal_id_green = p.loadURDF("urdf/goal_zone_green.urdf", basePosition=green_goal_pos)
         self.goal_pos_green = np.array([green_goal_pos[0],green_goal_pos[1], 0.03])  # for the arm to reach, added box height
 
-        blue_angle = 1.3
-        blue_goal_pos = [(- 0.3 * np.sin(blue_angle)), (- 0.3 * np.cos(blue_angle)), 0.001]
+        # red_angle = -1.3
+        red_goal_pos = [(green_goal_pos[0]), (green_goal_pos[1]+0.07), 0.001]
+        self.goal_id_red = p.loadURDF("urdf/goal_zone_red.urdf", basePosition=red_goal_pos)
+        self.goal_pos_red = np.array([red_goal_pos[0], red_goal_pos[1], 0.03])  # for the arm to reach, added box height
+
+        # blue_angle = 1.3
+        blue_goal_pos = [(green_goal_pos[0]), (green_goal_pos[1]-0.07), 0.001]
         self.goal_id_blue = p.loadURDF("urdf/goal_zone_blue.urdf", basePosition=blue_goal_pos)
         self.goal_pos_blue = np.array([blue_goal_pos[0], blue_goal_pos[1], 0.03])
-
 
         # self.robot.visualize_end_effector()
         self.robot.visualize_camera_orientation("camera_link")
@@ -106,7 +120,18 @@ class UArmEnv(gym.Env):
         ]
 
         box_specs = []
-        for _ in range(9):  # 3x3 grid
+        self.spawn_positions_xy = [
+            # (0.040, -0.390),##
+            (0.040, -0.320),
+            (0.040, -0.250),
+            (0.110, -0.250),#
+            # (0.110, -0.390),##
+            (0.110, -0.320),
+            # (0.180, -0.250),
+            # (0.180, -0.320),#
+            # (0.180, -0.390),##
+        ]
+        for _ in range(len(self.spawn_positions_xy)):  # 3x3 grid
             box_specs.append(random.choice(box_types))
 
         start_x = 0.04
@@ -116,10 +141,10 @@ class UArmEnv(gym.Env):
 
         for idx, (class_id, box_file) in enumerate(box_specs):
             row = idx // 3
-            col = idx % 3
+            col = idx % 2
             x = start_x + col * spacing_x
             y = start_y - row * spacing_y
-            pos = [x, y, 0.025]
+            pos = [self.spawn_positions_xy[idx][0], self.spawn_positions_xy[idx][1], 0.025]
             box_id = p.loadURDF(f"boxes/{box_file}", basePosition=pos)
             self.boxes.append(box_id)
             self.box_instances.append((box_id, class_id))
@@ -143,18 +168,7 @@ class UArmEnv(gym.Env):
         #         self.goal_pos = self.goal_pos_blue
         # self.goal_pos = self.goal_pos_red
 
-        self.spawn_positions_xy = [
-            (0.040, -0.390),
-            (0.040, -0.320),
-            (0.040, -0.250),
-            (0.110, -0.250),
-            (0.110, -0.390),
-            (0.110, -0.320),
-            (0.180, -0.250),
-            (0.180, -0.320),
-            (0.180, -0.390),
-        ]
-        self.spawn_z_values = [0.025, 0.075]
+        self.spawn_z_values = [0.025, 0.06]
 
         self.goal_positions = [
             self.goal_pos_red,
@@ -162,7 +176,7 @@ class UArmEnv(gym.Env):
             self.goal_pos_blue
         ]
 
-        if np.random.uniform() < 0.3:
+        if np.random.uniform() < 0.7:
             # 📦 Choose from spawn positions
             x, y = random.choice(self.spawn_positions_xy)
             x += np.random.uniform(-0.005, 0.005)
@@ -174,7 +188,7 @@ class UArmEnv(gym.Env):
             self.goal_pos = random.choice(self.goal_positions)
 
 
-        print(f"Goal position set to: {self.goal_pos}")
+        # print(f"Goal position set to: {self.goal_pos}")
         
 
         return self._get_obs()
@@ -190,7 +204,7 @@ class UArmEnv(gym.Env):
             joint1 = np.clip(action[0], -np.pi/2, np.pi/2) 
             joint2 = np.clip(action[1], -np.pi*0.4, np.pi) 
             joint3 = np.clip(action[2], -np.pi/2, np.pi*0.12) 
-            release_toggle = action[3] > 0.5
+            release_toggle = False
             self.r_toggled = not release_toggle if self.picked_up else release_toggle
         else:
             # Manual debug mode with sliders
@@ -297,7 +311,7 @@ class UArmEnv(gym.Env):
         self.current_step += 1
         self.global_step += 1
         if dist_to_goal < 0.025 :
-            print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
+            # print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
             # Reset the environment if goal is reached
             done = True
             reward += 2.0  # Bonus for reaching the goal
@@ -305,7 +319,7 @@ class UArmEnv(gym.Env):
 
         if self.current_step >= self.max_steps:
             done = True
-            # print(f"⏱️ Timeout at Step {self.current_step} | EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)}")
+            print(f"⏱️ Timeout at Step {self.current_step} | EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)}")
             self.timeout_count += 1
         if self.global_step % 20000 == 0:
             print(f"📊 Step {self.global_step} | ✅ Successes: {self.success_count} | ⏱️ Timeouts: {self.timeout_count}")
