@@ -310,7 +310,7 @@ class UArmEnv(gym.Env):
         # done = dist_to_goal < 0.05
         self.current_step += 1
         self.global_step += 1
-        if dist_to_goal < 0.025 :
+        if dist_to_goal < 0.02 :
             # print(f"🎉 Goal reached! EE: {np.round(ee_pos, 3)} | Goal: {np.round(self.goal_pos, 3)} | Reward: {round(reward, 4)}")
             # Reset the environment if goal is reached
             done = True
