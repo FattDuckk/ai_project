@@ -58,6 +58,7 @@ class UArmEnv(gym.Env):
         self.prev_gripper_state = None
         self.holding_box = False
         self.just_dropped = False
+      
 
 
         
@@ -189,7 +190,7 @@ class UArmEnv(gym.Env):
             z = random.choice(self.spawn_z_values)
             self.goal_pos = np.array([x, y, z])
         else:
-            # 🎯 Choose from goal zones (z is always 0.03)
+            # Choose from goal zones (z is always 0.03)
             self.goal_pos = random.choice(self.goal_positions)
 
 
@@ -209,8 +210,8 @@ class UArmEnv(gym.Env):
             joint1 = np.clip(action[0], -np.pi/2, np.pi/2) 
             joint2 = np.clip(action[1], -np.pi*0.4, np.pi) 
             joint3 = np.clip(action[2], -np.pi/2, np.pi*0.12) 
-            release_toggle = False
-            self.r_toggled = not release_toggle if self.picked_up else release_toggle
+            # release_toggle = action[3] > 0.5  # Gripper toggle
+            # self.r_toggled = not release_toggle if self.picked_up else release_toggle
         else:
             # Manual debug mode with sliders
             joint1 = p.readUserDebugParameter(self.sliders['joint1'])
@@ -280,7 +281,7 @@ class UArmEnv(gym.Env):
         self.robot.update_tool_axes("tool")
 
 
-        for _ in range(10):  # Try 30–120 steps per frame
+        for _ in range(15):  # Try 30–120 steps per frame
             p.stepSimulation()
             if self.render:
                 time.sleep(1/240)
@@ -591,141 +592,45 @@ class UArmEnv(gym.Env):
         print(f"✅ Saved image, label, and ground truth for image_{image_index:04}")
 
 
-    def _check_box_in_goal_zone(self, box_id, goal_pos, xy_threshold=0.06, z_threshold=0.015):
+    def _check_box_in_goal_zone(self, box_id, goal_pos, xy_threshold=0.06, z_threshold=0.020):
         box_pos, _ = p.getBasePositionAndOrientation(box_id)
         xy_dist = np.linalg.norm(np.array(box_pos[:2]) - np.array(goal_pos[:2]))
         z_diff = abs(box_pos[2] - goal_pos[2])
         return (xy_dist < xy_threshold) and (z_diff < z_threshold) 
     
 
-    def compute_reward(self, ee_pos, goal_pos, gripper_state, holding_box, just_dropped, placed_successfully):
-        # Distance to goal
-        dist_to_goal = np.linalg.norm(np.array(ee_pos[:2]) - np.array(goal_pos[:2]))
-        reward = -dist_to_goal  # Encourage getting closer
 
-        # Bonus for being very close
-        if dist_to_goal < 0.02:
-            reward += 0.5
+    def set_goal(self, goal=None):
+        """
+        Set a specific goal position or choose a random one if goal is None.
+        `goal` should be a 3-element list or numpy array: [x, y, z]
+        """
+        if goal is not None:
+            self.goal_pos = np.array(goal)
+        else:
+            if np.random.uniform() < 0.7:
+                x, y = random.choice(self.spawn_positions_xy)
+                x += np.random.uniform(-0.005, 0.005)
+                y += np.random.uniform(-0.005, 0.005)
+                z = random.choice(self.spawn_z_values)
+                self.goal_pos = np.array([x, y, z])
+            else:
+                self.goal_pos = random.choice(self.goal_positions)
 
-        # Bonus for gripping a box
-        if holding_box:
-            reward += 0.3
+        print(f"Goal manually set to: {self.goal_pos}")
 
-        # Success: box dropped in correct goal zone
-        if just_dropped and placed_successfully:
-            print(f"🎉 Box placed successfully in goal zone! EE: {np.round(ee_pos, 3)} | Goal: {np.round(goal_pos, 3)}")
-            reward += 2.0
-
-        # Failure: dropped elsewhere
-        elif just_dropped:
-            reward -= 0.5
-
-        return reward
-
-
-
-
-
-
-    # def capture_image_and_dummy_label(self, base_dir, image_index):
-    #     import os
-    #     import cv2
-
-    #     rgb, _ = self.get_camera_image()
-    #     if rgb is None:
-    #         print("❌ Failed to capture image.")
-    #         return
-
-    #     # Create directories
-    #     image_dir = os.path.join(base_dir, "images")
-    #     label_dir = os.path.join(base_dir, "labels")
-    #     os.makedirs(image_dir, exist_ok=True)
-    #     os.makedirs(label_dir, exist_ok=True)
-
-    #     # Save image
-    #     image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
-    #     rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-    #     cv2.imwrite(image_path, rgb_bgr)
-
-    #     # Save dummy YOLO label
-    #     label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
-    #     with open(label_path, "w") as f:
-    #         for box_id, class_id in self.box_instances:
-    #             pos, _ = p.getBasePositionAndOrientation(box_id)
-    #             screen_pos = self.project_to_image(pos)
-
-    #             if screen_pos:  # If inside view
-    #                 cx, cy = screen_pos
-    #                 f.write(f"{class_id} {cx:.6f} {cy:.6f} 0.08 0.08\n")  # assume box size ~8%
+    def toggle_gripper_func(self):
+        """
+        Toggle the gripper state.
+        """
+        self.r_toggled = not self.r_toggled
+        if self.r_toggled:
+            print("Gripper closed.")
+        else:
+            print("Gripper opened.")
+        return self.r_toggled
 
 
-    #     print(f"✅ Saved image and dummy label to folders (index {image_index:04})")
-    # def capture_image_and_dummy_label(self, base_dir, image_index):
-    #     import os
-    #     import cv2
-
-    #     rgb, _ = self.get_camera_image()
-    #     if rgb is None:
-    #         print("❌ Failed to capture image.")
-    #         return
-
-    #     # Create directories
-    #     image_dir = os.path.join(base_dir, "images")
-    #     label_dir = os.path.join(base_dir, "labels")
-    #     os.makedirs(image_dir, exist_ok=True)
-    #     os.makedirs(label_dir, exist_ok=True)
-
-    #     # Save image
-    #     image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
-    #     rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-    #     cv2.imwrite(image_path, rgb_bgr)
-
-    #     # Save dummy YOLO label
-    #     label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
-    #     with open(label_path, "w") as f:
-    #         for box_id, class_id in self.box_instances:
-    #             pos, _ = p.getBasePositionAndOrientation(box_id)
-    #             screen_pos = self.project_to_image(pos)
-
-    #             if screen_pos:  # If inside view
-    #                 cx, cy = screen_pos
-    #                 f.write(f"{class_id} {cx:.6f} {cy:.6f} 0.08 0.08\n")  # assume box size ~8%
-
-
-        # print(f"✅ Saved image and dummy label to folders (index {image_index:04})")
-    # def capture_image_and_label(self, base_dir, image_index):
-    #     import os, cv2
-
-    #     rgb, _ = self.get_camera_image()
-    #     if rgb is None:
-    #         print("❌ Failed to capture image.")
-    #         return
-
-    #     image_dir = os.path.join(base_dir, "images")
-    #     label_dir = os.path.join(base_dir, "labels")
-    #     os.makedirs(image_dir, exist_ok=True)
-    #     os.makedirs(label_dir, exist_ok=True)
-
-    #     image_path = os.path.join(image_dir, f"image_{image_index:04}.png")
-    #     rgb_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-    #     cv2.imwrite(image_path, rgb_bgr)
-
-    #     box_size_map = {0: 0.04, 1: 0.06, 2: 0.08}
-
-    #     label_path = os.path.join(label_dir, f"image_{image_index:04}.txt")
-    #     with open(label_path, "w") as f:
-    #         for box_id, class_id in self.box_instances:
-    #             pos, _ = p.getBasePositionAndOrientation(box_id)
-    #             screen_pos = self.project_to_image(pos)
-    #             if screen_pos:
-    #                 cx, cy = screen_pos
-    #                 cx /= self.image_width
-    #                 cy /= self.image_height
-    #                 box_size = box_size_map.get(class_id, 0.05)
-    #                 norm_size = box_size / self.image_width
-    #                 f.write(f"{class_id} {cx:.6f} {cy:.6f} {norm_size:.6f} {norm_size:.6f}\n")
-
-    #     print(f"✅ Saved image and label to folders (index {image_index:04})")
 
 
 
