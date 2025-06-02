@@ -1,2 +1,3 @@
-# Block organisation using the UArm 
-Welcome to our AI project which is 
+# STACKBOT
+This is the repository branch that contains source code for the Stackbot website.
+

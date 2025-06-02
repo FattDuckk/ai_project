@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>SortBot</title>
+        <meta charset="UTF-8">
+        <meta name="description"
+            content="">
+        <meta name="keywords" content="">
+        <meta name="author" content="Michele Liang">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/png" href="static/favicon_sortbot.png">
+        <link rel="stylesheet" href="static/index.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+        <style>
+            body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+            body {font-size:16px;}
+            .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+            .w3-half img:hover{opacity:1}
+        </style>
+    </head>
+    <body>
+
+    <!-- Sidebar/menu -->
+    <nav class="sidebar cinamorolled-blue collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+        <a href="javascript:void(0)" onclick="sb_close()" class="w3-button hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
+        <div class="w3-container">
+            <a href="#" onclick="sb_close(); document.getElementById('overview').scrollIntoView();" style="text-decoration: none;">
+                <img src="static/sortbot_name.png" class="w3-padding-64" style="width:100%" alt="SortBot">
+            </a>
+        </div>
+
+        <div class="w3-bar-block"> 
+            <a href="#overview" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Overview</a> 
+            <a href="#desc" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Description</a> 
+            <a href="#members" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Team members</a> 
+            <a href="#video" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Final video</a>
+            <a href="#repo" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Code</a> 
+            <a href="#gallery" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Gallery</a>
+            <a href="#" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white back-to-top">(back to top)</a>
+        </div>
+    </nav>
+
+    <!-- Top menu on small screens -->
+    <header class="w3-container w3-top hide-large cinamorolled-blue w3-xlarge w3-padding">
+    <a href="javascript:void(0)" class="w3-button cinamorolled-blue w3-margin-right" onclick="w3_open()">☰</a>
+    <span>Company Name</span>
+    </header>
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div class="w3-overlay hide-large" onclick="sb_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+    <!-- Header -->
+    <div class="w3-container" style="margin-top:80px" id="overview">
+        <h1 class="w3-jumbo"><b>SortBot</b></h1>
+        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Project overview.</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p>
+            Some text about our services - what we do and what we offer. We are lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+            dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
+    </div>
+    
+    <!-- Photo grid (modal) -->
+    <div class="w3-row-padding">
+        <div class="w3-half">
+        <img src="/w3images/kitchenconcrete.jpg" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+        <img src="/w3images/livingroom.jpg" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
+        <img src="/w3images/diningroom.jpg" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+        </div>
+
+        <div class="w3-half">
+        <img src="/w3images/atrium.jpg" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+        <img src="/w3images/bedroom.jpg" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
+        <img src="/w3images/livingroom2.jpg" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
+        </div>
+    </div>
+
+    <!-- Modal for full size images on click-->
+    <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
+        <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
+        <div class="modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+        <img id="img01" class="w3-image">
+        <p id="caption"></p>
+        </div>
+    </div>
+
+    <!-- Project description -->
+    <div class="w3-container" id="desc" style="margin-top:75px">
+        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>How it works.</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p>We are a interior design service that focus on what's best for your home and what's best for you!</p>
+        <p>Some text about our services - what we do and what we offer. We are lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
+    </div>
+    
+    <!-- Team members -->
+    <div class="w3-container" id="members" style="margin-top:75px">
+        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Team members.</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p>The best team?</p>
+        <p>This project was built through a collaborative effort, where each team member contributed to different aspects—from AI and vision systems to mechanical 
+            design and documentation. As a group of students, we explored ideas, planned solutions, and worked together to bring everything together. 
+        </p>
+        <p><b>Below is a breakdown of our roles.</b>:</p>
+    </div>
+
+    <!-- The Team -->
+    <div class="w3-row-padding w3-grayscale team-section">
+        <div class="col-fifth">
+            <div class="w3-light-grey">
+                <img src="" alt="Name" style="width:100%">
+                <div class="centered-div">
+                    <h3>Matthew Truong</h3>
+                    <p class="w3-opacity">Mechanical design lead</p>
+                    <p>Designed the UArm and its part for use in simulations.</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-fifth">
+            <div class="w3-light-grey">
+                <img src="" alt="Name" style="width:100%">
+                <div class="centered-div">
+                    <h3>Michele Liang</h3>
+                    <p class="w3-opacity">Vision assist</p>
+                    <p>Help with computer vision and YOLO algorithm, and creating documentation (including this portfolio).</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-fifth">
+            <div class="w3-light-grey">
+                <img src="" alt="Name" style="width:100%">
+                <div class="centered-div">
+                    <h3>Minh Nguyen</h3>
+                    <p class="w3-opacity">AI Lead</p>
+                    <p>Led in creation and training using PPO and YOLO, assisted with mechanical design.</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-fifth">
+            <div class="w3-light-grey">
+                <img src="" alt="Name" style="width:100%">
+                <div class="centered-div">
+                    <h3>Lauren Seeto</h3>
+                    <p class="w3-opacity">Robot controller</p>
+                    <p>Created the UArm controller and assisting with documentation.</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-fifth">
+            <div class="w3-light-grey">
+                <img src="" alt="Name" style="width:100%">
+                <div class="centered-div">
+                    <h3>Luis Pratama</h3>
+                    <p class="w3-opacity">Vision lead</p>
+                    <p>Created the final video, led computer vision and YOLO algorithm.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final video -->
+    <div class="w3-container" id="video" style="margin-top:75px">
+        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Final video.</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p>Check out the final video below!</p>
+        <iframe width="100%" height="500" src="https://www.youtube.com/embed/4d9a2g0k6eY" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+
+    <!-- Link to code/repository -->
+    <div class="w3-container" id="repo" style="margin-top:75px">
+        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Code.</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p>Check out our <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank">GitHub repository</a> for the code!</p>
+    </div>
+
+    <!-- Image gallery -->
+    <div class="w3-container" id="gallery" style="margin-top:75px">
+        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Gallery.</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+    </div>
+
+    <!-- Photo grid (modal) -->
+    <div class="w3-row-padding">
+        <div class="w3-half">
+        <img src="/w3images/kitchenconcrete.jpg" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+        <img src="/w3images/livingroom.jpg" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
+        <img src="/w3images/diningroom.jpg" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+        </div>
+
+        <div class="w3-half">
+        <img src="/w3images/atrium.jpg" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+        <img src="/w3images/bedroom.jpg" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
+        <img src="/w3images/livingroom2.jpg" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
+        </div>
+    </div>
+
+    <!-- Modal for full size images on click-->
+    <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
+        <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
+        <div class="modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+        <img id="img01" class="w3-image">
+        <p id="caption"></p>
+        </div>
+    </div>
+
+    <!-- End page content -->
+    </div>
+
+    <!-- W3.CSS Container -->
+    <div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px"><p class="w3-right">Powered by GitHub Pages | Template from <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a></p></div>
+
+    <script>
+        // Script to open and close sidebar
+        function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+        }
+        
+        function sb_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+        }
+
+        // Modal Image Gallery
+        function onClick(element) {
+        document.getElementById("img01").src = element.src;
+        document.getElementById("modal01").style.display = "block";
+        var captionText = document.getElementById("caption");
+        captionText.innerHTML = element.alt;
+        }
+    </script>
+
+    </body>
+</html>
