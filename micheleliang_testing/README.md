@@ -1,2 +1,1 @@
-# ai_project
-# placeholder
+# all my other stuff is in the portfolio_page branch
