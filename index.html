@@ -16,14 +16,14 @@
         <style>
             body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
             body {font-size:16px;}
-            .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
-            .w3-half img:hover{opacity:1}
+            .half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+            .half img:hover{opacity:1}
         </style>
     </head>
     <body>
 
     <!-- Sidebar/menu -->
-    <nav class="sidebar cinamorolled-blue collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+    <nav class="sidebar cinamorolled-blue collapse top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
         <a href="javascript:void(0)" onclick="sb_close()" class="w3-button hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
         <div class="w3-container">
             <a href="#" onclick="sb_close(); document.getElementById('overview').scrollIntoView();" style="text-decoration: none;">
@@ -43,9 +43,9 @@
     </nav>
 
     <!-- Top menu on small screens -->
-    <header class="w3-container w3-top hide-large cinamorolled-blue w3-xlarge w3-padding">
+    <header class="w3-container top hide-large cinamorolled-blue w3-xlarge w3-padding">
     <a href="javascript:void(0)" class="w3-button cinamorolled-blue w3-margin-right" onclick="w3_open()">☰</a>
-    <span>Company Name</span>
+    <span><img src="static/sortbot.png" style="height:45px" alt="SortBot"></span>
     </header>
 
     <!-- Overlay effect when opening sidebar on small screens -->
@@ -60,33 +60,24 @@
         <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Project overview.</b></h1>
         <hr style="width:50px;border:5px solid red" class="w3-round">
         <p>
-            Some text about our services - what we do and what we offer. We are lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Our project is an automated sorting system that leverages a <b><u><a href="https://www.seeedstudio.com/uArm-metal-p-2196.html?srsltid=AfmBOorsAqZjHu1WDgyAWxpvdV5n28cd3QDBpDIA_GBdQJDirVcyd307" target="_blank">UArm Metal</a></u></b> 
+            robot arm to tackle everyday sorting challenges. The arm is equipped with a suction cup end effector, which gently picks up and moves boxes to their designated 
+            zones—where coloured boxes are sorted into designated areas that match its colour. A camera paired with a <i>You Only Look Once (YOLO)</i> algorithm detects and distinguishes the boxes by color, 
+            while a reinforcement learning policy using <i>Proximal Policy Optimisation (PPO)</i> guides the arm's movements with adaptive precision.
+        </p>
+        <p>
+            This project was developed as part of the <b>AI in Robotics (41118)</b> course at the University of Technology Sydney, Australia.
         </p>
     </div>
     
     <!-- Photo grid (modal) -->
     <div class="w3-row-padding">
-        <div class="w3-half">
-        <img src="/w3images/kitchenconcrete.jpg" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
-        <img src="/w3images/livingroom.jpg" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
-        <img src="/w3images/diningroom.jpg" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+        <div class="half">
+            <img src="static/gif-sort1.gif" style="width:100%" alt="Animated GIF of UArm successfully sorting boxes" class="no-hover">
         </div>
 
-        <div class="w3-half">
-        <img src="/w3images/atrium.jpg" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
-        <img src="/w3images/bedroom.jpg" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
-        <img src="/w3images/livingroom2.jpg" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
-        </div>
-    </div>
-
-    <!-- Modal for full size images on click-->
-    <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
-        <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
-        <div class="modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-        <img id="img01" class="w3-image">
-        <p id="caption"></p>
+        <div class="half">
+            <img src="static/gif-sort2.gif" style="width:100%" alt="Animated GIF of UArm successfully sorting boxes in a PyBullet window" class="no-hover">
         </div>
     </div>
 
@@ -116,9 +107,9 @@
     <div class="w3-row-padding w3-grayscale team-section">
         <div class="col-fifth">
             <div class="w3-light-grey">
-                <img src="" alt="Name" style="width:100%">
+                <img src="static/team/matt-tr.png" alt="Matthew Truong doodle" class="doodle">
                 <div class="centered-div">
-                    <h3>Matthew Truong</h3>
+                    <h3>Matthew Truong <a href="https://www.linkedin.com/in/matthew-truong-730396208/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
                     <p class="w3-opacity">Mechanical design lead</p>
                     <p>Designed the UArm and its part for use in simulations.</p>
                 </div>
@@ -127,20 +118,20 @@
     
         <div class="col-fifth">
             <div class="w3-light-grey">
-                <img src="" alt="Name" style="width:100%">
+                <img src="static/team/mich-li.png" alt="Michele Liang doodle" class="doodle">
                 <div class="centered-div">
-                    <h3>Michele Liang</h3>
+                    <h3>Michele Liang <a href="https://www.linkedin.com/in/michele-liang/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
                     <p class="w3-opacity">Vision assist</p>
-                    <p>Help with computer vision and YOLO algorithm, and creating documentation (including this portfolio).</p>
+                    <p>Help with computer vision and YOLO algorithm, and creating documentation (+ this website!).</p>
                 </div>
             </div>
         </div>
     
         <div class="col-fifth">
             <div class="w3-light-grey">
-                <img src="" alt="Name" style="width:100%">
+                <img src="static/team/minh-ng.png" alt="Minh Nguyen doodle" class="doodle">
                 <div class="centered-div">
-                    <h3>Minh Nguyen</h3>
+                    <h3>Minh Nguyen <a href="https://www.linkedin.com/in/minh-k-nguyen/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
                     <p class="w3-opacity">AI Lead</p>
                     <p>Led in creation and training using PPO and YOLO, assisted with mechanical design.</p>
                 </div>
@@ -149,9 +140,9 @@
     
         <div class="col-fifth">
             <div class="w3-light-grey">
-                <img src="" alt="Name" style="width:100%">
+                <img src="static/team/laur-se.png" alt="Lauren Seeto doodle" class="doodle">
                 <div class="centered-div">
-                    <h3>Lauren Seeto</h3>
+                    <h3 style="display: inline;">Lauren Seeto <a href="https://www.linkedin.com/in/lauren-seeto-a54805256/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
                     <p class="w3-opacity">Robot controller</p>
                     <p>Created the UArm controller and assisting with documentation.</p>
                 </div>
@@ -160,9 +151,9 @@
     
         <div class="col-fifth">
             <div class="w3-light-grey">
-                <img src="" alt="Name" style="width:100%">
+                <img src="static/team/luis-pr.png" alt="Luis Pratama doodle" class="doodle">
                 <div class="centered-div">
-                    <h3>Luis Pratama</h3>
+                    <h3 style="display: inline;">Luis Pratama <a href="https://www.linkedin.com/in/luis-pratama-6b40b8308/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
                     <p class="w3-opacity">Vision lead</p>
                     <p>Created the final video, led computer vision and YOLO algorithm.</p>
                 </div>
@@ -175,13 +166,21 @@
         <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Final video.</b></h1>
         <hr style="width:50px;border:5px solid red" class="w3-round">
         <p>Check out the final video below!</p>
-        <iframe width="100%" height="500" src="https://www.youtube.com/embed/4d9a2g0k6eY" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+        <iframe 
+            src="https://www.youtube.com/embed/F2fa6_jkoGM" 
+            title="SORTBOT" 
+            frameborder="0" 
+            allowfullscreen 
+            style="width: 100%; aspect-ratio: 16/9; border: 0;">
+        </iframe>
+    </div>
 
     <!-- Link to code/repository -->
     <div class="w3-container" id="repo" style="margin-top:75px">
         <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Code.</b></h1>
         <hr style="width:50px;border:5px solid red" class="w3-round">
         <p>Check out our <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank">GitHub repository</a> for the code!</p>
+        <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank"><img src="static/github_page.png" alt="Screenshot of main branch in the GitHub repository" class="git-img"></a>
     </div>
 
     <!-- Image gallery -->
@@ -192,16 +191,16 @@
 
     <!-- Photo grid (modal) -->
     <div class="w3-row-padding">
-        <div class="w3-half">
-        <img src="/w3images/kitchenconcrete.jpg" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
-        <img src="/w3images/livingroom.jpg" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
-        <img src="/w3images/diningroom.jpg" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+        <div class="half">
+            <img src="static/gallery/image.png" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+            <img src="" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
+            <img src="" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
         </div>
 
-        <div class="w3-half">
-        <img src="/w3images/atrium.jpg" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
-        <img src="/w3images/bedroom.jpg" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
-        <img src="/w3images/livingroom2.jpg" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
+        <div class="half">
+            <img src="" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+            <img src="" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
+            <img src="" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
         </div>
     </div>
 
@@ -218,7 +217,12 @@
     </div>
 
     <!-- W3.CSS Container -->
-    <div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px"><p class="w3-right">Powered by GitHub Pages | Template from <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a></p></div>
+    <div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px">
+        <p class="w3-right">
+            Powered by GitHub Pages | Template from <a href="https://www.w3schools.com/w3css/w3css_templates.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a>
+            <img src="static/icon.png" alt="icon" style="width:50px; height:50px; vertical-align:middle; margin-left:16px;">
+        </p>
+    </div>
 
     <script>
         // Script to open and close sidebar
