@@ -88,6 +88,37 @@
             zones—where coloured boxes are sorted into designated areas that match its colour. A camera paired with a <i>You Only Look Once (YOLO)</i> algorithm detects and distinguishes the boxes by color, 
             while a reinforcement learning policy using <i>Proximal Policy Optimisation (PPO)</i> guides the arm's movements with adaptive precision.
         </p>
+        <h2 class="w3-xxlarge cnmrll-text-blue"><b>Key components:</b></h2>
+        <p>
+            For visual perception, we employ <b>Ultralytics YOLOv8</b>, a state-of-the-art object detection model, to localise and classify boxes from a top-down camera feed. 
+            YOLOv8 detects each object’s class (small, medium, large) and predicts its bounding box coordinates. These detections are then translated into 
+            real-world positions, allowing the robot to autonomously identify where each object is and decide where to place it based on its class. YOLOv8 
+            offers fast, accurate, and real-time inference, making it ideal for the robotic sorting task.
+        </p>
+        <div class="w3-row-padding">
+            <div class="half">
+                <img src="static/gallery/yolo-bb.png" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+            </div>
+
+            <div class="half">
+                <img src="static/gallery/train_batch2.jpg" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+            </div>
+        </div>
+        <p>
+            This project uses <b>Proximal Policy Optimization (PPO)</b>, a reinforcement learning algorithm, from Stable Baselines3 to train a robotic arm to navigate precisely to target 
+            positions. PPO balances exploration and exploitation by updating the policy in a controlled manner, making it well-suited for continuous control 
+            tasks. In our case, PPO learns joint movements that align the robot’s end-effector with object and goal locations. The training process optimises 
+            for efficiency and accuracy in movement, enabling the robot to generalise across varied object positions without explicit hard-coding.
+        </p>
+        <div class="w3-row-padding">
+            <div class="half">
+                <img src="static/gallery/ppo-train.png" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+            </div>
+
+            <div class="half">
+                <img src="static/gallery/ppo-2.png" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+            </div>
+        </div>
     </div>
     
     <!-- Team members -->
@@ -191,14 +222,14 @@
     <div class="w3-row-padding">
         <div class="half">
             <img src="static/gallery/image.png" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
-            <img src="" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
-            <img src="" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+            <img src="static/gallery/yolo-raw.png" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
+            <img src="static/gallery/image 2.png" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
         </div>
 
         <div class="half">
-            <img src="" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
-            <img src="" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
-            <img src="" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
+            <img src="static/gallery/reward.png" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+            <img src="static/gallery/ppo-training.png" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
+            <img src="static/gallery/uarm-joints.png" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
         </div>
     </div>
 
