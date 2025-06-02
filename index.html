@@ -16,35 +16,35 @@
         <style>
             body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
             body {font-size:16px;}
-            .half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
-            .half img:hover{opacity:1}
+            .half img{margin-bottom:-6px;margin-top:16px;opacity:1;cursor:pointer}
+            .half img:hover{opacity:0.8}
         </style>
     </head>
     <body>
 
     <!-- Sidebar/menu -->
-    <nav class="sidebar cinamorolled-blue collapse top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+    <nav class="sidebar obj-blue collapse top font-large padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
         <a href="javascript:void(0)" onclick="sb_close()" class="w3-button hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
         <div class="w3-container">
             <a href="#" onclick="sb_close(); document.getElementById('overview').scrollIntoView();" style="text-decoration: none;">
-                <img src="static/sortbot_name.png" class="w3-padding-64" style="width:100%" alt="SortBot">
+                <img src="static/sortbot_name.png" class="padding-64" style="width:100%" alt="SortBot">
             </a>
         </div>
 
         <div class="w3-bar-block"> 
-            <a href="#overview" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Overview</a> 
-            <a href="#desc" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Description</a> 
-            <a href="#members" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Team members</a> 
-            <a href="#video" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Final video</a>
-            <a href="#repo" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Code</a> 
-            <a href="#gallery" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white">Gallery</a>
-            <a href="#" onclick="sb_close()" class="w3-bar-item w3-button w3-hover-white back-to-top">(back to top)</a>
+            <a href="#overview" onclick="sb_close()" class="w3-bar-item w3-button hover-white">Overview</a> 
+            <a href="#desc" onclick="sb_close()" class="w3-bar-item w3-button hover-white">Description</a> 
+            <a href="#members" onclick="sb_close()" class="w3-bar-item w3-button hover-white">Team members</a> 
+            <a href="#video" onclick="sb_close()" class="w3-bar-item w3-button hover-white">Final video</a>
+            <a href="#repo" onclick="sb_close()" class="w3-bar-item w3-button hover-white">Code</a> 
+            <a href="#gallery" onclick="sb_close()" class="w3-bar-item w3-button hover-white">Gallery</a>
+            <a href="#" onclick="sb_close()" class="w3-bar-item w3-button hover-white back-to-top">(back to top)</a>
         </div>
     </nav>
 
     <!-- Top menu on small screens -->
-    <header class="w3-container top hide-large cinamorolled-blue w3-xlarge w3-padding">
-    <a href="javascript:void(0)" class="w3-button cinamorolled-blue w3-margin-right" onclick="w3_open()">☰</a>
+    <header class="w3-container top hide-large obj-blue w3-xlarge padding">
+    <a href="javascript:void(0)" class="w3-button obj-blue w3-margin-right" onclick="w3_open()">☰</a>
     <span><img src="static/sortbot.png" style="height:45px" alt="SortBot"></span>
     </header>
 
@@ -54,210 +54,210 @@
     <!-- !PAGE CONTENT! -->
     <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
-    <!-- Header + Project overview -->
-    <div class="w3-container" style="margin-top:80px" id="overview">
-        <h1 class="w3-jumbo"><b>SortBot</b></h1>
-        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Project overview.</b></h1>
-        <hr style="width:50px;border:5px solid red" class="w3-round">
-        <p>
-            An intelligent robotic sorting system built in PyBullet that combines deep reinforcement learning (PPO) with object detection (YOLOv8). The uArm robot detects, picks up, and sorts coloured boxes into their designated zones autonomously.
-        </p>
-        <p>
-            This project was developed as part of the <b>AI in Robotics (41118)</b> course at the University of Technology Sydney, Australia.
-        </p>
-    </div>
-    
-    <!-- Animated GIFs of SortBot -->
-    <div class="w3-row-padding">
-        <div class="half">
-            <img src="static/gif-sort1.gif" style="width:100%" alt="Animated GIF of UArm successfully sorting boxes" title="Animated GIF of UArm successfully sorting boxes" class="no-hover">
+        <!-- Header + Project overview -->
+        <div class="w3-container" style="margin-top:80px" id="overview">
+            <h1 class="w3-jumbo"><b>SortBot</b></h1>
+            <h1 class="w3-xxxlarge obj-text-blue"><b>Project overview.</b></h1>
+            <hr style="width:50px;border:5px solid red" class="w3-round">
+            <p>
+                An intelligent robotic sorting system built in PyBullet that combines deep reinforcement learning (PPO) with object detection (YOLOv8). The uArm robot detects, picks up, and sorts coloured boxes into their designated zones autonomously.
+            </p>
+            <p>
+                This project was developed as part of the <b>AI in Robotics (41118)</b> course at the University of Technology Sydney, Australia.
+            </p>
+        </div>
+        
+        <!-- Animated GIFs of SortBot -->
+        <div class="w3-row-padding">
+            <div class="half">
+                <img src="static/gif-sort1.gif" style="width:100%" alt="Animated GIF of UArm successfully sorting boxes" title="Animated GIF of UArm successfully sorting boxes" class="no-hover">
+            </div>
+
+            <div class="half">
+                <img src="static/gif-sort2.gif" style="width:100%" alt="Animated GIF of UArm successfully sorting boxes in a PyBullet window" title="Animated GIF of UArm successfully sorting boxes in a PyBullet window" class="no-hover">
+            </div>
         </div>
 
-        <div class="half">
-            <img src="static/gif-sort2.gif" style="width:100%" alt="Animated GIF of UArm successfully sorting boxes in a PyBullet window" title="Animated GIF of UArm successfully sorting boxes in a PyBullet window" class="no-hover">
-        </div>
-    </div>
-
-    <!-- Project description -->
-    <div class="w3-container" id="desc" style="margin-top:75px">
-        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>How it works.</b></h1>
-        <hr style="width:50px;border:5px solid red" class="w3-round">
-        <p>
-            Our project is an automated sorting system that leverages a <b><u><a href="https://www.seeedstudio.com/uArm-metal-p-2196.html?srsltid=AfmBOorsAqZjHu1WDgyAWxpvdV5n28cd3QDBpDIA_GBdQJDirVcyd307" target="_blank">UArm Metal</a></u></b> 
-            robot arm to tackle everyday sorting challenges. The arm is equipped with a suction cup end effector, which gently picks up and moves boxes to their designated 
-            zones—where coloured boxes are sorted into designated areas that match its colour. A camera paired with a <i>You Only Look Once (YOLO)</i> algorithm detects and distinguishes the boxes by color, 
-            while a reinforcement learning policy using <i>Proximal Policy Optimisation (PPO)</i> guides the arm's movements with adaptive precision.
-        </p>
-        <h2 class="w3-xxlarge cnmrll-text-blue"><b>Key components:</b></h2>
-        <p>
-            For visual perception, we employ <b>Ultralytics YOLOv8</b>, a state-of-the-art object detection model, to localise and classify boxes from a top-down camera feed. 
-            YOLOv8 detects each object’s class (small, medium, large) and predicts its bounding box coordinates. These detections are then translated into 
-            real-world positions, allowing the robot to autonomously identify where each object is and decide where to place it based on its class. YOLOv8 
-            offers fast, accurate, and real-time inference, making it ideal for the robotic sorting task.
-        </p>
-    </div>
-
-    <!-- YOLO images -->
-    <div class="w3-row-padding">
-        <div class="half">
-            <img src="static/gallery/yolo-bb.png" style="width:100%" onclick="onClick(this)" title="YOLO bounding boxes" alt="YOLO bounding boxes, with classes representing the colour they will sort into.">
+        <!-- Project description -->
+        <div class="w3-container" id="desc" style="margin-top:75px">
+            <h1 class="w3-xxxlarge obj-text-blue"><b>How it works.</b></h1>
+            <hr style="width:50px;border:5px solid red" class="w3-round">
+            <p>
+                Our project is an automated sorting system that leverages a <b><u><a href="https://www.seeedstudio.com/uArm-metal-p-2196.html?srsltid=AfmBOorsAqZjHu1WDgyAWxpvdV5n28cd3QDBpDIA_GBdQJDirVcyd307" target="_blank">UArm Metal</a></u></b> 
+                robot arm to tackle everyday sorting challenges. The arm is equipped with a suction cup end effector, which gently picks up and moves boxes to their designated 
+                zones—where coloured boxes are sorted into designated areas that match its colour. A camera paired with a <i>You Only Look Once (YOLO)</i> algorithm detects and distinguishes the boxes by color, 
+                while a reinforcement learning policy using <i>Proximal Policy Optimisation (PPO)</i> guides the arm's movements with adaptive precision.
+            </p>
+            <h2 class="w3-xxlarge obj-text-blue"><b>Key components:</b></h2>
+            <p>
+                For visual perception, we employ <b>Ultralytics YOLOv8</b>, a state-of-the-art object detection model, to localise and classify boxes from a top-down camera feed. 
+                YOLOv8 detects each object’s class (small, medium, large) and predicts its bounding box coordinates. These detections are then translated into 
+                real-world positions, allowing the robot to autonomously identify where each object is and decide where to place it based on its class. YOLOv8 
+                offers fast, accurate, and real-time inference, making it ideal for the robotic sorting task.
+            </p>
         </div>
 
-        <div class="half">
-            <img src="static/gallery/train_batch2.jpg" style="width:100%" onclick="onClick(this)" title="YOLO training process" alt="Training process for the YOLO algorithm, where different views of the objects are shown and labelled.">
-        </div>
-    </div>
+        <!-- YOLO images -->
+        <div class="w3-row-padding">
+            <div class="half">
+                <img src="static/gallery/yolo-bb.png" style="width:100%" onclick="onClick(this)" title="YOLO bounding boxes" alt="YOLO bounding boxes, with classes representing the colour they will sort into.">
+            </div>
 
-    <!-- PPO description -->
-    <div class="w3-container" style="margin-top:0px">
-        <p>
-            This project uses <b>Proximal Policy Optimization (PPO)</b>, a reinforcement learning algorithm, from Stable Baselines3 to train a robotic arm to navigate precisely to target 
-            positions. PPO balances exploration and exploitation by updating the policy in a controlled manner, making it well-suited for continuous control 
-            tasks. In our case, PPO learns joint movements that align the robot’s end-effector with object and goal locations. The training process optimises 
-            for efficiency and accuracy in movement, enabling the robot to generalise across varied object positions without explicit hard-coding.
-        </p>
-    </div>
-
-    <!-- PPO images -->
-    <div class="w3-row-padding">
-        <div class="half">
-            <img src="static/gallery/ppo-train.png" style="width:100%" onclick="onClick(this)" title="PPO training process" alt="Snapshot of PPO training process, featuring the reward system.">
+            <div class="half">
+                <img src="static/gallery/train_batch2.jpg" style="width:100%" onclick="onClick(this)" title="YOLO training process" alt="Training process for the YOLO algorithm, where different views of the objects are shown and labelled.">
+            </div>
         </div>
 
-        <div class="half">
-            <img src="static/gallery/ppo-2.png" style="width:100%" onclick="onClick(this)" title="UArm in simulation" alt="Simulated UArm which will be controlled to pick up and sort boxes using PPO.">
+        <!-- PPO description -->
+        <div class="w3-container" style="margin-top:0px">
+            <p>
+                This project uses <b>Proximal Policy Optimization (PPO)</b>, a reinforcement learning algorithm, from Stable Baselines3 to train a robotic arm to navigate precisely to target 
+                positions. PPO balances exploration and exploitation by updating the policy in a controlled manner, making it well-suited for continuous control 
+                tasks. In our case, PPO learns joint movements that align the robot’s end-effector with object and goal locations. The training process optimises 
+                for efficiency and accuracy in movement, enabling the robot to generalise across varied object positions without explicit hard-coding.
+            </p>
         </div>
-    </div>
-    
-    <!-- Team members -->
-    <div class="w3-container" id="members" style="margin-top:75px">
-        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Team members.</b></h1>
-        <hr style="width:50px;border:5px solid red" class="w3-round">
-        <p>The best team?</p>
-        <p>This project was built through a collaborative effort, where each team member contributed to different aspects—from AI and vision systems to mechanical 
-            design and documentation. As a group of students, we explored ideas, planned solutions, and worked together to bring everything together. 
-        </p>
-        <p><b>Below is a breakdown of our roles.</b>:</p>
-    </div>
 
-    <!-- The Team -->
-    <div class="w3-row-padding w3-grayscale team-section">
-        <div class="col-fifth">
-            <div class="w3-light-grey">
-                <img src="static/team/matt-tr.png" alt="Matthew Truong doodle" class="doodle">
-                <div class="centered-div">
-                    <h3>Matthew Truong <a href="https://www.linkedin.com/in/matthew-truong-730396208/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
-                    <p class="w3-opacity">Mechanical design lead</p>
-                    <p>Designed the UArm and its part for use in simulations.</p>
+        <!-- PPO images -->
+        <div class="w3-row-padding">
+            <div class="half">
+                <img src="static/gallery/ppo-train.png" style="width:100%" onclick="onClick(this)" title="PPO training process" alt="Snapshot of PPO training process, featuring the reward system.">
+            </div>
+
+            <div class="half">
+                <img src="static/gallery/ppo-2.png" style="width:100%" onclick="onClick(this)" title="UArm in simulation" alt="Simulated UArm which will be controlled to pick up and sort boxes using PPO.">
+            </div>
+        </div>
+        
+        <!-- Team members -->
+        <div class="w3-container" id="members" style="margin-top:75px">
+            <h1 class="w3-xxxlarge obj-text-blue"><b>Team members.</b></h1>
+            <hr style="width:50px;border:5px solid red" class="w3-round">
+            <p>The best team?</p>
+            <p>This project was built through a collaborative effort, where each team member contributed to different aspects—from AI and vision systems to mechanical 
+                design and documentation. As a group of students, we explored ideas, planned solutions, and worked together to bring everything together. 
+            </p>
+            <p><b>Below is a breakdown of our roles.</b>:</p>
+        </div>
+
+        <!-- The Team -->
+        <div class="w3-row-padding w3-grayscale team-section">
+            <div class="col-fifth">
+                <div class="obj-light-grey">
+                    <img src="static/team/matt-tr.png" alt="Matthew Truong doodle" class="doodle">
+                    <div class="centered-div">
+                        <h3>Matthew Truong <a href="https://www.linkedin.com/in/matthew-truong-730396208/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
+                        <p class="w3-opacity">Mechanical design lead</p>
+                        <p>Designed the UArm and its part for use in simulations.</p>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-fifth">
+                <div class="obj-light-grey">
+                    <img src="static/team/mich-li.png" alt="Michele Liang doodle" class="doodle">
+                    <div class="centered-div">
+                        <h3>Michele Liang <a href="https://www.linkedin.com/in/michele-liang/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
+                        <p class="w3-opacity">Vision assist</p>
+                        <p>Help with computer vision and YOLO algorithm, and creating documentation (+ this website!).</p>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-fifth">
+                <div class="obj-light-grey">
+                    <img src="static/team/minh-ng.png" alt="Minh Nguyen doodle" class="doodle">
+                    <div class="centered-div">
+                        <h3>Minh Nguyen <a href="https://www.linkedin.com/in/minh-k-nguyen/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
+                        <p class="w3-opacity">AI Lead</p>
+                        <p>Led in creation and training using PPO and YOLO, assisted with mechanical design.</p>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-fifth">
+                <div class="obj-light-grey">
+                    <img src="static/team/laur-se.png" alt="Lauren Seeto doodle" class="doodle">
+                    <div class="centered-div">
+                        <h3 style="display: inline;">Lauren Seeto <a href="https://www.linkedin.com/in/lauren-seeto-a54805256/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
+                        <p class="w3-opacity">Robot controller</p>
+                        <p>Created the UArm controller and assisting with documentation.</p>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-fifth">
+                <div class="obj-light-grey">
+                    <img src="static/team/luis-pr.png" alt="Luis Pratama doodle" class="doodle">
+                    <div class="centered-div">
+                        <h3 style="display: inline;">Luis Pratama <a href="https://www.linkedin.com/in/luis-pratama-6b40b8308/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
+                        <p class="w3-opacity">Vision lead</p>
+                        <p>Created the final video, led computer vision and YOLO algorithm.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    
-        <div class="col-fifth">
-            <div class="w3-light-grey">
-                <img src="static/team/mich-li.png" alt="Michele Liang doodle" class="doodle">
-                <div class="centered-div">
-                    <h3>Michele Liang <a href="https://www.linkedin.com/in/michele-liang/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
-                    <p class="w3-opacity">Vision assist</p>
-                    <p>Help with computer vision and YOLO algorithm, and creating documentation (+ this website!).</p>
-                </div>
+
+        <!-- Final video -->
+        <div class="w3-container" id="video" style="margin-top:75px">
+            <h1 class="w3-xxxlarge obj-text-blue"><b>Final video.</b></h1>
+            <hr style="width:50px;border:5px solid red" class="w3-round">
+            <p>Check out the final video below!</p>
+            <iframe 
+                src="https://www.youtube.com/embed/F2fa6_jkoGM" 
+                title="SORTBOT" 
+                frameborder="0" 
+                allowfullscreen 
+                style="width: 100%; aspect-ratio: 16/9; border: 0;">
+            </iframe>
+        </div>
+
+        <!-- Link to code/repository -->
+        <div class="w3-container" id="repo" style="margin-top:75px">
+            <h1 class="w3-xxxlarge obj-text-blue"><b>Code.</b></h1>
+            <hr style="width:50px;border:5px solid red" class="w3-round">
+            <p>Check out our <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank">GitHub repository</a> for the code!</p>
+            <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank"><img src="static/github_page.png" alt="Screenshot of main branch in the GitHub repository" class="git-img"></a>
+        </div>
+
+        <!-- Image gallery -->
+        <div class="w3-container" id="gallery" style="margin-top:75px">
+            <h1 class="w3-xxxlarge obj-text-blue"><b>Gallery.</b></h1>
+            <hr style="width:50px;border:5px solid red" class="w3-round">
+            <p>Here are some images from our project, including the robot arm, training process, and more! Click on an image to focus on it :)</p>
+        </div>
+
+        <!-- Photo grid (modal) -->
+        <div class="w3-row-padding">
+            <div class="half">
+                <img src="static/gallery/image.png" style="width:100%" onclick="onClick(this)" title="Snapshot of working algorithm" 
+                alt="A simulation environment for a robotic arm using Bullet Physics ExampleBrowser with OpenGL3+. On the left side, there's a terminal displaying log messages about the robotic arm's movements and tracking its goal positions.">
+                <img src="static/gallery/yolo-raw.png" style="width:100%" onclick="onClick(this)" title="YOLO raw input" alt="Raw input for YOLO with the coloured boxes as target objects and without bounding boxes.">
+                <img src="static/gallery/uarm-irl.png" style="width:100%" onclick="onClick(this)" title="Image of UArm metal in real life" alt="Image of UArm metal in real life.">
+                <img src="static/gallery/image 2.png" style="width:100%" onclick="onClick(this)" title="YOLO predicted vs ground truth" alt="YOLO predicted values (left) and ground truth (right).">
+            </div>
+
+            <div class="half">
+                <img src="static/gallery/reward.png" style="width:100%" onclick="onClick(this)" title="Concept for reward system of the StackBot" alt="Concept for reward system of the StackBot, the idea predecessor for the SortBot.">
+                <img src="static/gallery/ppo-training.png" style="width:100%" onclick="onClick(this)" title="Performance logs on PPO training" alt="Performance logs on PPO training.">
+                <img src="static/gallery/uarm-joints.png" style="width:100%" onclick="onClick(this)" title="URDF model of UArm" alt="URDF model of UArm with defined axes in each joint.">
             </div>
         </div>
-    
-        <div class="col-fifth">
-            <div class="w3-light-grey">
-                <img src="static/team/minh-ng.png" alt="Minh Nguyen doodle" class="doodle">
-                <div class="centered-div">
-                    <h3>Minh Nguyen <a href="https://www.linkedin.com/in/minh-k-nguyen/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
-                    <p class="w3-opacity">AI Lead</p>
-                    <p>Led in creation and training using PPO and YOLO, assisted with mechanical design.</p>
-                </div>
+
+        <!-- Modal for full size images on click-->
+        <div id="modal01" class="w3-modal bg-black" style="padding-top:0" onclick="this.style.display='none'">
+            <span class="w3-button bg-black w3-xxlarge w3-display-topright">×</span>
+            <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent padding-64">
+                <img id="img01" class="w3-image">
+                <p id="caption"></p>
             </div>
         </div>
-    
-        <div class="col-fifth">
-            <div class="w3-light-grey">
-                <img src="static/team/laur-se.png" alt="Lauren Seeto doodle" class="doodle">
-                <div class="centered-div">
-                    <h3 style="display: inline;">Lauren Seeto <a href="https://www.linkedin.com/in/lauren-seeto-a54805256/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
-                    <p class="w3-opacity">Robot controller</p>
-                    <p>Created the UArm controller and assisting with documentation.</p>
-                </div>
-            </div>
-        </div>
-    
-        <div class="col-fifth">
-            <div class="w3-light-grey">
-                <img src="static/team/luis-pr.png" alt="Luis Pratama doodle" class="doodle">
-                <div class="centered-div">
-                    <h3 style="display: inline;">Luis Pratama <a href="https://www.linkedin.com/in/luis-pratama-6b40b8308/" target="_blank"><img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" style="width:20px;height:20px"></a></h3>
-                    <p class="w3-opacity">Vision lead</p>
-                    <p>Created the final video, led computer vision and YOLO algorithm.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Final video -->
-    <div class="w3-container" id="video" style="margin-top:75px">
-        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Final video.</b></h1>
-        <hr style="width:50px;border:5px solid red" class="w3-round">
-        <p>Check out the final video below!</p>
-        <iframe 
-            src="https://www.youtube.com/embed/F2fa6_jkoGM" 
-            title="SORTBOT" 
-            frameborder="0" 
-            allowfullscreen 
-            style="width: 100%; aspect-ratio: 16/9; border: 0;">
-        </iframe>
-    </div>
-
-    <!-- Link to code/repository -->
-    <div class="w3-container" id="repo" style="margin-top:75px">
-        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Code.</b></h1>
-        <hr style="width:50px;border:5px solid red" class="w3-round">
-        <p>Check out our <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank">GitHub repository</a> for the code!</p>
-        <a href="https://github.com/FattDuckk/ai_project/tree/main" target="_blank"><img src="static/github_page.png" alt="Screenshot of main branch in the GitHub repository" class="git-img"></a>
-    </div>
-
-    <!-- Image gallery -->
-    <div class="w3-container" id="gallery" style="margin-top:75px">
-        <h1 class="w3-xxxlarge cnmrll-text-blue"><b>Gallery.</b></h1>
-        <hr style="width:50px;border:5px solid red" class="w3-round">
-        <p>Here are some images from our project, including the robot arm, training process, and more! Click on an image to focus on it :)</p>
-    </div>
-
-    <!-- Photo grid (modal) -->
-    <div class="w3-row-padding">
-        <div class="half">
-            <img src="static/gallery/image.png" style="width:100%" onclick="onClick(this)" title="Snapshot of working algorithm" 
-            alt="A simulation environment for a robotic arm using Bullet Physics ExampleBrowser with OpenGL3+. On the left side, there's a terminal displaying log messages about the robotic arm's movements and tracking its goal positions.">
-            <img src="static/gallery/yolo-raw.png" style="width:100%" onclick="onClick(this)" title="YOLO raw input" alt="Raw input for YOLO with the coloured boxes as target objects and without bounding boxes.">
-            <img src="static/gallery/uarm-irl.png" style="width:100%" onclick="onClick(this)" title="Image of UArm metal in real life" alt="Image of UArm metal in real life.">
-            <img src="static/gallery/image 2.png" style="width:100%" onclick="onClick(this)" title="YOLO predicted vs ground truth" alt="YOLO predicted values (left) and ground truth (right).">
-        </div>
-
-        <div class="half">
-            <img src="static/gallery/reward.png" style="width:100%" onclick="onClick(this)" title="Concept for reward system of the StackBot" alt="Concept for reward system of the StackBot, the idea predecessor for the SortBot.">
-            <img src="static/gallery/ppo-training.png" style="width:100%" onclick="onClick(this)" title="Performance logs on PPO training" alt="Performance logs on PPO training.">
-            <img src="static/gallery/uarm-joints.png" style="width:100%" onclick="onClick(this)" title="URDF model of UArm" alt="URDF model of UArm with defined axes in each joint.">
-        </div>
-    </div>
-
-    <!-- Modal for full size images on click-->
-    <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
-        <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
-        <div class="modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-        <img id="img01" class="w3-image">
-        <p id="caption"></p>
-        </div>
-    </div>
 
     <!-- End page content -->
     </div>
 
     <!-- W3.CSS Container -->
-    <div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px">
+    <div class="obj-light-grey w3-container padding-32" style="margin-top:75px;padding-right:58px">
         <p class="w3-right">
             Powered by GitHub Pages | Template from <a href="https://www.w3schools.com/w3css/w3css_templates.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a>
             <img src="static/icon.png" alt="icon" style="width:75px; height:75px; vertical-align:middle; margin-left:16px;">
@@ -267,21 +267,21 @@
     <script>
         // Script to open and close sidebar
         function w3_open() {
-        document.getElementById("mySidebar").style.display = "block";
-        document.getElementById("myOverlay").style.display = "block";
+            document.getElementById("mySidebar").style.display = "block";
+            document.getElementById("myOverlay").style.display = "block";
         }
         
         function sb_close() {
-        document.getElementById("mySidebar").style.display = "none";
-        document.getElementById("myOverlay").style.display = "none";
+            document.getElementById("mySidebar").style.display = "none";
+            document.getElementById("myOverlay").style.display = "none";
         }
 
         // Modal Image Gallery
         function onClick(element) {
-        document.getElementById("img01").src = element.src;
-        document.getElementById("modal01").style.display = "block";
-        var captionText = document.getElementById("caption");
-        captionText.innerHTML = element.alt;
+            document.getElementById("img01").src = element.src;
+            document.getElementById("modal01").style.display = "block";
+            var captionText = document.getElementById("caption");
+            captionText.innerHTML = element.alt;
         }
     </script>
 
