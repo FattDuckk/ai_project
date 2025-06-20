@@ -32,7 +32,7 @@ class UArmEnv(gym.Env):
         
 
         # Set action and observation space
-        self.action_space = spaces.Box(low=-1, high=1, shape=(4,), dtype=np.float32)
+        self.action_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,), dtype=np.float32)
 
 
@@ -279,13 +279,13 @@ class UArmEnv(gym.Env):
         obs = self._get_obs()
         ee_pos = self.robot.get_joint_obs()['ee_pos']
         dist_to_goal = np.linalg.norm(np.array(ee_pos) - self.goal_pos)
-        reward = -dist_to_goal
+        reward = -(dist_to_goal + 0.01)
 
         # done = dist_to_goal < 0.05
         self.current_step += 1
         self.global_step += 1
 
-        # Check if z is below 0.02
+        # Check if z is below 0.025
         if ee_pos[2] < 0.025:
             reward -= 0.1  # Penalty for dropping too low. Prevent from hitting boxes
 
@@ -302,6 +302,8 @@ class UArmEnv(gym.Env):
             self.timeout_count += 1
         if self.global_step % 20000 == 0:
             print(f"📊 Step {self.global_step} | ✅ Successes: {self.success_count} | ⏱️ Timeouts: {self.timeout_count}")
+            self.success_count = 0
+            self.timeout_count = 0
 
         return obs, reward, done, {}
 
