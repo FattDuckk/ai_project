@@ -45,7 +45,7 @@ goal_positions = {
 
 # Step 4: Iterate through all predictions
 
-ppo_model = PPO.load("./ppo/ppo_uarm_final_20")
+ppo_model = PPO.load("./ppo_checkpoints/ppo_checkpoint_1660000")
 
 def move_to(x, y, z):
     env.set_goal([x, y, z])  # hover height
@@ -67,7 +67,7 @@ for cls, x, y in predicted_boxes:
     action_box = move_to(x, y, 0.025)  # hover height
     print("Picking up", action_box)
     env.toggle_gripper_func()
-    # time.sleep(0.2) 
+    time.sleep(0.01) 
 
     action_lift = move_to(x, y, 0.06)  # lift height
     print("Lifting Up", action_lift)
@@ -75,7 +75,7 @@ for cls, x, y in predicted_boxes:
     action_goal = move_to(*goal_positions[cls])
     print("Goalies", action_goal)
     env.toggle_gripper_func()
-    # time.sleep(0.2) 
+    time.sleep(0.01) 
     
 
 print("✅ All boxes sorted!")
