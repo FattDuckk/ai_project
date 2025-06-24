@@ -57,6 +57,7 @@ def move_to(x, y, z):
         action, _ = ppo_model.predict(obs)
         obs, reward, done, info = env.step(action)
         # print("Action taken:", action)
+        rgb, depth = env.get_camera_image()
         time.sleep(0.05) 
 
     return action

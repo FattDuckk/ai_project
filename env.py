@@ -14,7 +14,8 @@ class UArmEnv(gym.Env):
         self.physics_client = p.connect(p.GUI if self.render else p.DIRECT)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
-        
+        p.configureDebugVisualizer(p.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
+        p.configureDebugVisualizer(p.COV_ENABLE_DEPTH_BUFFER_PREVIEW, 0) 
         self.max_steps = 500
         self.current_step = 0
         self.global_step = 0
@@ -45,10 +46,12 @@ class UArmEnv(gym.Env):
             # 'joint5': p.addUserDebugParameter("Joint 5", -np.pi*2, np.pi*2, 0),
         }
 
+        
+
         self.picked_up = False
         self.attachment = None
         self.held_box = None
-        self.pickup_threshold = 0.03  # 3 cm radius snap zone
+        self.pickup_threshold = 0.05  # 3 cm radius snap zone
         self.last_r_pressed = False
         self.r_toggled = False
         self.toggle_gripper = False  # for toggling gripper state
