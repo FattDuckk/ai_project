@@ -20,7 +20,8 @@ p.configureDebugVisualizer(p.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
 env.reset()
 
 # Load PPO model
-ppo_model = PPO.load("./ppo_checkpoints/ppo_checkpoint_1660000")
+ppo_model = PPO.load("./ppo_checkpoints/ppo_checkpoint_1000000")
+# ppo_model = PPO.load("./ppo_checkpoints/ppo_checkpoint_1660000")
 
 # Track state
 mode = "Idle"
@@ -28,24 +29,39 @@ camera_enabled = True
 
 # Show OpenCV HUD with current mode + camera
 def show_hud(current_mode, cam_on, controller_mode=None):
-    hud = np.zeros((240, 450, 3), dtype=np.uint8)
+    # hud = np.zeros((480, 900, 3), dtype=np.uint8)
 
-    cv2.putText(hud, "CONTROLS", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
-    cv2.putText(hud, "[S] Start Sorting", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-    cv2.putText(hud, "[R] Reset Environment", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 255, 200), 1)
-    cv2.putText(hud, "[M] Manual Mode", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 230, 180), 1)
-    cv2.putText(hud, "[B] Back (Exit Manual)", (10, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 255), 1)
-    cv2.putText(hud, "[C] Toggle Camera", (10, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (180, 230, 255), 1)
-    cv2.putText(hud, "[Q] Quit", (10, 190), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 200, 200), 1)
+
+    hud = np.zeros((1080, 1920, 3), dtype=np.uint8)  # 4x size
+
+    font_scale = 2.4  # 2x previous
+    thickness = 4
+    # cv2.putText(hud, "CONTROLS", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+    # cv2.putText(hud, "[S] Start Sorting", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+    # cv2.putText(hud, "[R] Reset Environment", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 255, 200), 1)
+    # cv2.putText(hud, "[M] Manual Mode", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 230, 180), 1)
+    # cv2.putText(hud, "[B] Back (Exit Manual)", (10, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 255), 1)
+    # cv2.putText(hud, "[C] Toggle Camera", (10, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (180, 230, 255), 1)
+    # cv2.putText(hud, "[Q] Quit", (10, 190), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 200, 200), 1)
+
+    cv2.putText(hud, "CONTROLS", (40, 120), cv2.FONT_HERSHEY_SIMPLEX, font_scale + 0.4, (255, 255, 255), thickness + 2)
+    cv2.putText(hud, "[S] Start Sorting", (40, 240), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), thickness)
+    cv2.putText(hud, "[R] Reset Environment", (40, 360), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (200, 255, 200), thickness)
+    cv2.putText(hud, "[M] Manual Mode", (40, 480), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 230, 180), thickness)
+    cv2.putText(hud, "[B] Exit Manual", (40, 600), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (200, 200, 255), thickness)
+    cv2.putText(hud, "[C] Toggle Camera", (40, 720), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (180, 230, 255), thickness)
+    cv2.putText(hud, "[Q] Quit", (40, 840), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 200, 200), thickness)
 
     mode_text = f"{current_mode}"
     if current_mode == "Manual" and controller_mode:
         mode_text += f" ({controller_mode.title()})"
-    cv2.putText(hud, f"MODE: {mode_text}", (180, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 100), 2)
+    cv2.putText(hud, f"MODE: {mode_text}", (900, 120), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 100), thickness)
+
 
     cam_status = "ON" if cam_on else "OFF"
     cam_color = (100, 255, 100) if cam_on else (100, 100, 255)
-    cv2.putText(hud, f"CAMERA: {cam_status}", (180, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, cam_color, 2)
+    cv2.putText(hud, f"CAMERA: {cam_status}", (900, 240), cv2.FONT_HERSHEY_SIMPLEX, font_scale, cam_color, thickness)
+
 
     cv2.imshow("Legend", hud)
     cv2.waitKey(1)
@@ -176,11 +192,11 @@ def run_sorting():
         print(f"Handling Class {cls} at ({x:.5f}, {y:.5f})")
         move_to(x, y, 0.025)
         env.toggle_gripper_func()
-        time.sleep(0.07)
+        time.sleep(0.02)
         move_to(x, y, 0.06)
         move_to(*goal_positions[cls])
         env.toggle_gripper_func()
-        time.sleep(0.07)
+        time.sleep(0.02)
 
     print("✅ All boxes sorted!")
 
