@@ -9,13 +9,6 @@ env = UArmEnv(render=True)
 p.configureDebugVisualizer(p.COV_ENABLE_SEGMENTATION_MARK_PREVIEW, 0)
 env.reset()
 
-# Create fake panel labels as sliders
-p.addUserDebugParameter("======== CONTROLS ========", 1, 1, 1)
-p.addUserDebugParameter("[S] Start Sorting", 1, 1, 1)
-p.addUserDebugParameter("[R] Reset Environment", 1, 1, 1)
-p.addUserDebugParameter("[Q] Quit", 1, 1, 1)
-
-
 
 # Load PPO model
 ppo_model = PPO.load("./ppo_checkpoints/ppo_checkpoint_1660000")

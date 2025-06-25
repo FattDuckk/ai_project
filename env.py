@@ -36,7 +36,7 @@ class UArmEnv(gym.Env):
         self.action_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,), dtype=np.float32)
 
-
+        
         # Add sliders for real-time control
         self.sliders = {
             'joint1': p.addUserDebugParameter("Joint 1", -np.pi/2, np.pi/2, 0),
@@ -44,6 +44,7 @@ class UArmEnv(gym.Env):
             'joint3': p.addUserDebugParameter("Joint 3", -np.pi/2, np.pi*0.12, -1.57),
             # 'joint4': p.addUserDebugParameter("Joint 4", -np.pi/2, np.pi/2, 0),
             # 'joint5': p.addUserDebugParameter("Joint 5", -np.pi*2, np.pi*2, 0),
+            'gripper' : p.addUserDebugParameter("Gripper (0=open, 1=closed)", 0, 1, 0)
         }
 
         
@@ -190,6 +191,8 @@ class UArmEnv(gym.Env):
             joint1 = p.readUserDebugParameter(self.sliders['joint1'])
             joint2 = p.readUserDebugParameter(self.sliders['joint2'])
             joint3 = p.readUserDebugParameter(self.sliders['joint3'])
+            gripper_val = p.readUserDebugParameter(self.sliders['gripper'])
+            self.r_toggled = gripper_val > 0.5  # gripper closed if slider > 0.5
 
         # Auto-compensate wrist tilt
         joint4 = -joint2 - joint3
