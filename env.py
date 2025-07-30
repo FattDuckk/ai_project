@@ -47,8 +47,6 @@ class UArmEnv(gym.Env):
             'gripper' : p.addUserDebugParameter("Gripper (0=open, 1=closed)", 0, 1, 0)
         }
 
-        
-
         self.picked_up = False
         self.attachment = None
         self.held_box = None
@@ -60,7 +58,6 @@ class UArmEnv(gym.Env):
         self.prev_gripper_state = None
         self.holding_box = False
         self.just_dropped = False
-      
 
     def reset(self):
         p.resetSimulation()
@@ -313,7 +310,6 @@ class UArmEnv(gym.Env):
 
         return obs, reward, done, {}
 
-
     # def _get_obs(self):
     #     joint_obs = self.robot.get_joint_obs()
     #     positions = joint_obs['positions']
@@ -325,7 +321,6 @@ class UArmEnv(gym.Env):
         joint_pos = joint_obs['positions'][:3]       # only joints 1-3
         ee_pos = joint_obs['ee_pos']
         return np.concatenate([joint_pos, ee_pos, self.goal_pos])  # shape: (9,)
-
 
     def render(self, mode='human'):
         pass  # PyBullet handles rendering automatically
@@ -539,8 +534,6 @@ class UArmEnv(gym.Env):
         xy_dist = np.linalg.norm(np.array(box_pos[:2]) - np.array(goal_pos[:2]))
         z_diff = abs(box_pos[2] - goal_pos[2])
         return (xy_dist < xy_threshold) and (z_diff < z_threshold) 
-    
-
 
     def set_goal(self, goal=None):
         """
