@@ -24,7 +24,7 @@ An intelligent robotic sorting system built in PyBullet that combines deep reinf
 # Clone the repository
 ## HTTPS:
 ```bash
-git clone https://github.com/yourusername/41118_SortBot.git
+git clone https://github.com/FattDuckk/ai_project.git
 ```
 ## ssh:
 ```
@@ -33,10 +33,7 @@ git clone git@github.com:FattDuckk/ai_project.git
 
 # Running
 ```bash
-cd main/UArm_robot_training
-```
-```bash
-python3 sort.py
+python3 main.py
 ```
 
 
